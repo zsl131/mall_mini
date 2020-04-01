@@ -4,7 +4,7 @@
 		<agentApplyForm ref="applyForm"/>
 	</view>
 	<view class="grace-body" v-if="applyObj">
-		<agentApplyDetail v-if="(applyObj.status=='1' || applyObj.status=='0')" :applyObj="applyObj" :verifyList="verifyList" :paperList="paperList"/>
+		<agentApplyDetail v-if="(applyObj.status=='1' || applyObj.status=='0')" :levelList="levelList" :applyObj="applyObj" :verifyList="verifyList" :paperList="paperList"/>
 		<agentApplyForm v-if="applyObj.status=='2'" :defaultIndexVal="defaultIndexVal" :curObj="applyObj" :verifyList="verifyList" :paperList="paperList"/>
 	</view>
 	</view>
@@ -23,6 +23,7 @@
 				verifyList:[],
 				paperList:[],
 				defaultIndexVal: [0,0,0],
+				levelList: [],
 			}
 		},
 		onLoad: function() {
@@ -40,6 +41,7 @@
 					}
 					_self.verifyList = res.verifyList;
 					_self.paperList = res.paperList;
+					_self.levelList = res.levelList;
 				})
 			},
 			buildDefaultIndex: function(addressIndex) {

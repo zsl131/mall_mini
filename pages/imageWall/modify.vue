@@ -15,7 +15,7 @@
 			<image v-if="image.fileType=='1'" :src="image.url" mode="widthFix"/>
 			<video :id="image.id" v-if="image.fileType=='2'" :src="image.url" objectFit="cover" controls></video>
 			<view class="title-view">
-				<input class="title-input" @input="onInput" maxlength="40" placeholder="请输入标题..."/>
+				<input class="title-input" placeholder-class="title-input-placeholder" @input="onInput" maxlength="40" placeholder="请输入标题..."/>
 			</view>
 		</view>
 	</view>
@@ -94,11 +94,14 @@ export default {
 	width:100%;
 }
 .title-view {
-	width:100%; padding: 0px 20px; position: absolute; bottom: 30px; z-index: 10; /* background:#FFFFFF;opacity:0.8; */
+	width:100%; padding: 0px 20px; position: fixed; bottom: 00px; z-index: 10; background:#000000;opacity:0.2;
 }
-.title-view .title-input {
+.title-input {
 	width: 80%; padding:10px; text-align:center; font-size: 16px;
-	text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0; color:#FFF;
+	color:#FFFFFF; text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0; color:#FFF;
+}
+.title-view .title-input-placeholder {
+	/* text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0; color:#aaa; */
 }
 
 /* .publish-btn {

@@ -12,21 +12,27 @@
 		<scroll-view scroll-y="true" refresher-enabled="true" @scrolltolower="onPage" class="main-view" >
 			<view v-for="(image, index) in imageList" :key="index" class="single-image-view">
 				<view class="single-image-view-content">
-				<image v-if="image.fileType=='1'" :src="image.url" mode="widthFix"/>
-				<video :id="image.id" v-if="image.fileType=='2'" :src="image.url" objectFit="cover" controls></video>
-				<view class="single-image-content">
-					<view class="head-party">
-						<view class="head-img"><image :src="image.headImgUrl" mode="aspectFit"/></view>
-						<view class="head-title">
-							<view class="nickname">{{image.customNickname}}</view>
-							<view class="title">{{image.title}}</view>
+					<image v-if="image.fileType=='1'" :src="image.url" mode="widthFix"/>
+					<video :id="image.id" v-if="image.fileType=='2'" :src="image.url" objectFit="cover" controls></video>
+					<view class="single-image-main-view">
+						<view class="single-image-content">
+							<view class="head-party">
+								<view class="head-img"><image :src="image.headImgUrl" mode="aspectFit"/></view>
+								<view class="head-title">
+									<view class="nickname">{{image.customNickname}}</view>
+									<view class="title">{{image.title?image.title:'...'}}</view>
+								</view>
+							</view>
+							<view class="heart-party" @tap="onHeart(image.id)">
+								<image src="../../static/heart-red.png" mode="aspectFit"/>
+								<view class="heart-count">{{image.goodCount}}</view>
+							</view>
+						</view>
+						<view v-if="(image.relationFlag=='1' && image.relationProId)" class="has-pro-view" @tap="onShowProduct(image)">
+							<view class="name"><image src="../../static/found.png" mode="aspectFit"/><text>发现里面有料</text></view>
+							<view class="goto"><text>点击查看</text><image src="../../static/right-arrow.png" mode="aspectFit"/></view>
 						</view>
 					</view>
-					<view class="heart-party" @tap="onHeart(image.id)">
-						<image src="../../static/heart-red.png" mode="aspectFit"/>
-						<view class="heart-count">{{image.goodCount}}</view>
-					</view>
-				</view>
 				</view>
 			</view>
 			<view class="more-view">
@@ -67,8 +73,10 @@ export default {
 			that.loadData(true);
 		},
 		loadData: function(isAppend) {
+			console.log(that.canPage)
 			if(that.canPage) {
 				that.$request.get("miniImageWallService.listShow", {page: that.page, size: that.size}).then((res) => {
+					console.log(res)
 					that.type = res.type;
 					if(isAppend) {
 						that.imageList = that.imageList.concat(res.imageList);
@@ -95,6 +103,14 @@ export default {
 			that.imageList.map((item)=> {
 				if(item.id===id) {item.goodCount = item.goodCount+count;}
 			})
+		},
+		onShowProduct: function(obj) {
+			//console.log(obj);
+			if(obj.relationFlag=='1' && obj.relationProId) {
+				uni.navigateTo({
+					url:"../product/show?id="+obj.relationProId
+				})
+			}
 		},
 		onHeart: function(id) {
 			//console.log(id)
@@ -143,6 +159,13 @@ export default {
 				},
 				success:(uploadRes) => {
 					//console.log(uploadRes)
+					const obj = JSON.parse(uploadRes.data).data[0];
+					//console.log(obj)
+					if(obj.id) {
+						uni.navigateTo({
+							url: "./modify?id="+obj.id
+						})
+					}
 				}
 			});
 			uploadTask.onProgressUpdate((res)=> {
@@ -154,9 +177,10 @@ export default {
 					uni.showToast({
 						title: "上传成功", icon:"none"
 					})
-					let pages = this.getCurrentPages();
+					
+					/* let pages = that.getCurrentPages();
 					let page = pages[pages.length - 1];
-					page.onLoad()
+					page.onLoad() */
 				}
 			})
 		},
@@ -178,10 +202,13 @@ export default {
 .single-image-view-content image, .single-image-view-content video {
 	width:100%; border-radius: 10px 10px 0px 0px; margin:0px;
 }
-.single-image-content {
+.single-image-main-view {
 	background:#FFF; border-radius: 0px 0px 10px 10px;
 	box-shadow: 6px 6px 6px #ddd; margin-top: -5px;
-	min-height: 50px; display: flex;
+	min-height: 50px; 
+}
+.single-image-content {
+	display: flex;
 }
 .head-party {
 	flex: 1; display: flex;
@@ -200,7 +227,7 @@ export default {
 	font-size: 12px; color:#888; margin-top: 12px;
 }
 .head-title .title {
-	font-size: 12px; color:#333; line-height: 25px; height: 25px; overflow: hidden; overflow-wrap: break-word;
+	font-size: 12px; color:#333; line-height: 20px; min-height: 25px; 
 }
 .heart-party {
 	width:40px; text-align: center;
@@ -210,6 +237,31 @@ export default {
 }
 .heart-party .heart-count {
 	width:100%; text-align: center; color:#666;
+}
+
+.has-pro-view {
+	width:100%; border-top:1px #ddd dotted; display: flex; padding: 10px 0px;
+}
+.has-pro-view .name {
+	flex: 2; margin-left: 10px; color:#555; font-size: 12px; display: flex;
+}
+.has-pro-view .name image {
+	width:25px; height:25px;
+}
+.has-pro-view .name text {
+	flex: 1; line-height: 28px; margin-left: 5px; color:#dc0c55;
+}
+
+.has-pro-view .goto {
+	flex:1; margin-right: 5px; color:#bfbfbf; line-height: 20px; text-align: right; padding:0px;
+	display: flex;
+}
+.has-pro-view .goto text {
+	line-height: 20px; color:#bfbfbf; 
+	flex: 1;
+}
+.has-pro-view .goto image {
+	width: 20px; height: 20px; border-radius: 0;
 }
 
 .text-content-view {

@@ -26,13 +26,13 @@
 			    "text" : "我的",
 			    "iconPath" : "static/my.png",
 			    "selectedIconPath" : "static/my-a.png"
-			},
+			}/* ,
 			{
 			    "pagePath" : "pages/test/test",
 			    "text" : "测试",
 			    "iconPath" : "static/my.png",
 			    "selectedIconPath" : "static/my-a.png"
-			}
+			} */
 	    ]
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
@@ -96,7 +96,7 @@
         ,{
             "path" : "pages/agent/apply/apply",
             "style" : {
-				"navigationBarTitleText":"申请成为代理"
+				"navigationBarTitleText":"代理中心"
 			}
         }
         ,{
@@ -173,7 +173,7 @@
 	    "list": [{
 	            "name": "index", //模式名称
 	            "path": "pages/index/index", //启动页面，必选
-	            "query": "tagId=1&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
+	            "query": "agentId=1" //启动参数，在页面的onLoad函数里面得到。
 	        }, {
 	            "name": "me", //模式名称
 	            "path": "pages/my/my", //启动页面，必选
