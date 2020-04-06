@@ -60,9 +60,9 @@ export default {
 				uni.getUserInfo({
 				  provider: 'weixin',
 				  success: function (infoRes) {
-					//console.log('info：', infoRes.userInfo);
-					let userInfo = infoRes.userInfo;
-					userInfo.code = loginRes.code;
+					//console.log('info：', infoRes);
+					//let userInfo = infoRes.userInfo;
+					//userInfo.code = loginRes.code;
 					//console.log(infoRes);
 					that.$request.get("miniAuthService.getUserInfo", {code: loginRes.code, encryptedData:infoRes.encryptedData, iv: infoRes.iv}).then((res) => {
 						//console.log(res)

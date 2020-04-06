@@ -67,11 +67,12 @@ request.get = (apiCode, params, options) => {
 	
 	let headers = {
 		'content-type':'application/x-www-form-urlencoded;charset=utf-8',
-		'authToken': "test-token", //后期使用有效Token
-		'openid': curCustom.openid, //用户openid
-		'unionid': curCustom.unionid, //用户unionid
-		'customId': curCustom.id, //用户id
+		'authtoken': "test-token", //后期使用有效Token
+		'openid': curCustom.openid||'', //用户openid
+		'unionid': curCustom.unionid||'', //用户unionid
+		'customid': curCustom.id||0, //用户id
 		'nickname': tools.password(curCustom.nickname), //无法传中文,先转码
+		'headimgurl': curCustom.headImgUrl||'', //用户头像
 		'apiCode': apiCode //请求接口,如:miniAuthService.getUserInfo
 	}
 	

@@ -3,7 +3,7 @@
 	<graceHeader background="#34CD6D">
 		<view class="grace-header-body">
 			<!-- 返回按钮 -->
-			<view class="icons grace-icons icon-scancode grace-white" style="font-size:44rpx;"></view>
+			<view class="icons grace-icons icon-img grace-white" @tap="showImageWall"></view>
 			<!-- 中间内容 -->
 			<!-- <view class="grace-header-content-noflex">
 				<graceSearch @tap="gotoSearch()"></graceSearch>
@@ -15,7 +15,7 @@
 				</view>
 			</view>
 			<!-- 用户按钮 -->
-			<view class="icons grace-icons icon-user grace-white"></view>
+			<view class="icons grace-icons icon-user grace-white" @tap="showUser"></view>
 		</view>
 	</graceHeader>
 </template>
@@ -38,6 +38,16 @@ export default {
 		gotoSearch: function() {
 			uni.navigateTo({
 				url:"../search/search"
+			})
+		},
+		showImageWall: function() {
+			uni.switchTab({
+				url:"../imageWall/index"
+			})
+		},
+		showUser: function() {
+			uni.switchTab({
+				url:"../my/my"
 			})
 		}
 	},

@@ -9,7 +9,7 @@
 				{{title}}
 			</view>
 			<!-- 用户按钮 -->
-			<button plain="true" open-type="share" class="icons grace-icons icon-share grace-white pro-share-btn"></button>
+			<button plain="true" @tap="onShare" class="icons grace-icons icon-share grace-white pro-share-btn"></button>
 		</view>
 	</graceHeader>
 </template>
@@ -36,7 +36,10 @@ export default {
 			uni.navigateBack({
 				
 			})
-		}
+		},
+		onShare: function() {
+			that.$emit("onShare");
+		},
 	},
 	components: {
 		graceHeader

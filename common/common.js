@@ -7,6 +7,7 @@ import tools from "./tools.js";
 function getRandomKey() {
 	const user = getLoginUser();
 	const seconds = Date.parse(new Date())/1000;
+	
 	const res = user.id+"_"+parseInt(Math.random()*seconds);
 	return res;
 }

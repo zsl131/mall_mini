@@ -35,7 +35,7 @@ export default {
 	},
 	methods: {
 		showImages: function(obj) {
-			console.log(obj);
+			//console.log(obj);
 			that.obj = obj; that.showDialog = true;
 		},
 	},

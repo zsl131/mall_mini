@@ -1,52 +1,57 @@
 <template>
-	<view class="main-container">
-		<addressComponent :address="address" @selectAddress="selectAddress"></addressComponent>
-		
-		<productComponent ref="proComponent" @changeAmount="changeAmount"></productComponent>
-		
-		<view class="bottom-opts">
-			<text class="total-count">共{{totalCount}}件，</text>
-			<text class="total-money">合计：￥{{totalMoney}}元</text>
-			<text class="pay-submit-btn" @tap="submitOrders">提交订单</text>
-		</view>
-		
-		<view class="coupon-view">
-			<view class="single-other-view grace-nowrap" @tap="onShowCoupon">
-				<view class="other-title">优惠</view>
-				<view class="grace-flex1 other-content">{{curCoupon.couponName}}</view>
-				<view class="other-opt">
-					<view class="other-opt-value" v-if="curCoupon.worth">-￥{{curCoupon.worth}}元</view>
-					<view class="grace-icons icon-arrow-right right-logo"></view>
+	<view>
+		<showSharederComponent ref="sharedComponent"></showSharederComponent>
+	
+		<view class="main-container">
+			
+			<addressComponent :address="address" @selectAddress="selectAddress"></addressComponent>
+			
+			<productComponent ref="proComponent" @changeAmount="changeAmount"></productComponent>
+			
+			<view class="bottom-opts">
+				<text class="total-count">共{{totalCount}}件，</text>
+				<text class="total-money">合计：￥{{totalMoney}}元</text>
+				<text class="pay-submit-btn" @tap="submitOrders">提交订单</text>
+			</view>
+			
+			<view class="coupon-view">
+				<view class="single-other-view grace-nowrap" @tap="onShowCoupon">
+					<view class="other-title">优惠</view>
+					<view class="grace-flex1 other-content">{{curCoupon.couponName}}</view>
+					<view class="other-opt">
+						<view class="other-opt-value" v-if="curCoupon.worth">-￥{{curCoupon.worth}}元</view>
+						<view class="grace-icons icon-arrow-right right-logo"></view>
+					</view>
+				</view>
+				
+				<view class="single-other-view grace-nowrap">
+					<view class="other-title">备注</view>
+					<view class="grace-flex1 other-content">
+						<input placeholder="选填,可输入一些备注信息" @input="onChangeRemark"/>
+					</view>
 				</view>
 			</view>
 			
-			<view class="single-other-view grace-nowrap">
-				<view class="other-title">备注</view>
-				<view class="grace-flex1 other-content">
-					<input placeholder="选填,可输入一些备注信息" @input="onChangeRemark"/>
+			<graceBottomDialog :show="showCoupon" v-on:closeDialog="closeShow">
+				<view slot="content">
+					<view class="grace-select-tags">
+						<view class="select-header">
+							优惠详情
+						</view>
+						<view class="grace-select-tag" 
+						@tap.stop="couponSelectChange(item)" v-for="(item, index) in couponList" :key="index" 
+						:class="[item.id===curCoupon.id? 'selected-item':'']">
+							<view><text class="select-name">{{item.couponName}}</text>
+							<text v-if="item.worth" class="select-ori-price">满{{item.reachMoney}}减</text><text v-if="item.worth" class="select-price">￥ {{item.worth}} 元</text></view>
+							<view><text class="select-remark">{{item.remark}}</text></view>
+						</view>
+						<view class="coupon-bottom-opts grace-nowrap">
+							<view class="single-opt join-shop grace-flex1" @tap="closeShow">完成</view>
+						</view>
+					</view>
 				</view>
-			</view>
+			</graceBottomDialog>
 		</view>
-		
-		<graceBottomDialog :show="showCoupon" v-on:closeDialog="closeShow">
-			<view slot="content">
-				<view class="grace-select-tags">
-					<view class="select-header">
-						优惠详情
-					</view>
-					<view class="grace-select-tag" 
-					@tap.stop="couponSelectChange(item)" v-for="(item, index) in couponList" :key="index" 
-					:class="[item.id===curCoupon.id? 'selected-item':'']">
-						<view><text class="select-name">{{item.couponName}}</text>
-						<text v-if="item.worth" class="select-ori-price">满{{item.reachMoney}}减</text><text v-if="item.worth" class="select-price">￥ {{item.worth}} 元</text></view>
-						<view><text class="select-remark">{{item.remark}}</text></view>
-					</view>
-					<view class="coupon-bottom-opts grace-nowrap">
-						<view class="single-opt join-shop grace-flex1" @tap="closeShow">完成</view>
-					</view>
-				</view>
-			</view>
-		</graceBottomDialog>
 	</view>
 </template>
 
@@ -54,8 +59,10 @@
 var that;
 import addressComponent from "./addressComponent.vue";
 import productComponent from "./productComponent.vue";
+import showSharederComponent from "@/components/showSharederComponent.vue"
 import graceBottomDialog from '@/graceUI/components/graceBottomDialog.vue';
 import common from "@/common/common.js";
+import sharederTools from "@/common/sharederTools.js";
 export default {
 	data() {
 		return {
@@ -80,13 +87,17 @@ export default {
 		}
 	},
 	onLoad(options) {
-		console.log(options)
+		//console.log(options)
 		that = this;
 		that.query = options;
 		that.loadData();
 		that.tempSaveData(options.ids);
 		that.curCoupon = that.buildDefaultCoupon();
 		that.ordersKey = common.getRandomKey();
+		that.$refs.sharedComponent.loadShareder();
+		
+		let tmp = {a:'1'};
+		console.log(tmp.a, tmp.b||"---")
 	},
 	onUnload() {
 		//console.log("on Pay unloaded");
@@ -131,6 +142,8 @@ export default {
 					basketData += (item.proId+"-"+item.specsId+"-"+item.amount+"_");
 				});
 				
+				const shareder = sharederTools.loadShare();
+				//console.log(shareder);
 				const data = {
 					addressId: address.id,
 					remark: remark,
@@ -138,6 +151,7 @@ export default {
 					productData: basketData,
 					ordersKey: that.ordersKey, //订单密钥
 					agentId: 0, //对应代理ID
+					agentOpenid: shareder?shareder.openid:'', //对应的代理Openid
 				}
 				console.log("submitData:::", data);
 				that.$request.get("miniOrdersService.submitOrders", data).then((res)=> {
@@ -217,7 +231,8 @@ export default {
 	components: {
 		addressComponent,
 		productComponent,
-		graceBottomDialog
+		graceBottomDialog,
+		showSharederComponent
 	}
 }
 </script>

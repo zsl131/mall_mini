@@ -17,8 +17,11 @@
 				</view>
 			</view>
 			<view class="zsl-card-body">已申请，等待审核</view>
+			
+			<button type="primary" style="margin: 10px;" size="mini" @tap="bindNotice">点击 开启审核状态通知</button>
 		</view>
 		
+		<view class="zsl-remark" v-if="(levelList && levelList.length>0)">注意：各级代理按照以下标准进行销售提成，此标准会根据整体经营情况进行适当调整，请各代理注意查阅。</view>
 		<view class="show-level-main-view" v-if="(levelList && levelList.length>0)">
 			<view class="show-level-name">
 				<view v-for="(level, index) in levelList" @tap="onChangeLevel(level.id)" :key="index" :class="levelId==level.id?'active':''">{{level.name}}</view>
@@ -80,6 +83,25 @@ export default {
 					} else {that.canPage = false;}
 				})
 			}
+		},
+		bindNotice: function() {
+			const tempId = "a7uRVse33w7zjMik362eMXJCp8cu45vjpaVNQesish8";
+			uni.requestSubscribeMessage({
+				tmplIds: [tempId],
+				success:(res)=> {
+					//console.log(res)
+					const status = res[tempId];
+					if(status=='accept') {
+						that.$request.get("customSubscribeService.accept", {tempId: tempId}).then((result)=> {
+							//console.log(result);
+							if(result) {uni.showToast({
+								title: "订阅成功", icon:'none'
+							})}
+						})
+					}
+					//console.log(res['a7uRVse33w7zjMik362eMXJCp8cu45vjpaVNQesish8'])
+				}
+			});
 		},
 		onChangeLevel: function(levelId) {
 			that.levelId = levelId;

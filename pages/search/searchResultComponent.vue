@@ -2,10 +2,10 @@
 	<gracePage headerBG="#FFFFFF" :customHeader="false">
 		<view slot="gBody" class="grace-body" style="background:#f8f8f8;min-height: 100vh;">
 			
-			<view class="SegmentedControlIn" style="margin-top: 10px;">
+			<!-- <view class="SegmentedControlIn" style="margin-top: 10px;">
 				<segmentedControl :items="cates" :current="type" @change="onTypeChange"
 					bgColor="#f0f0f0" color="#F37B1D"></segmentedControl>
-			</view>
+			</view> -->
 			
 			<view v-if="type===0">
 			<view class="grace-space-between" v-if="hasProduct">
@@ -25,7 +25,7 @@
 				</view>
 			</view>
 			<view v-if="!hasProduct">
-				<emptyCompent message="什么也没有搜到,换一个试试"></emptyCompent>
+				<emptyCompent message="空空如也,换一个关键词试试吧~~"></emptyCompent>
 			</view>
 			</view>
 			

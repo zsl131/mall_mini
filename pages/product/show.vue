@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<titleComponent :title="product.title"/>
+		<titleComponent :title="product.title" @onShare="onShare"/>
+		<showSharederComponent ref="sharedComponent"></showSharederComponent>
 		<view v-if="product && product.id">
 			<carouseComponent :swiperItems="mediumList"/>
 			<view class="product-content">
@@ -42,12 +43,11 @@
 				</view>
 			</graceBottomDialog>
 			
-			
 			<detailTitleComponent title="产品详情"/>
 			<view class="product-html" v-html="product.content"></view>
 			
 			<view class="grace-footer grace-space-between" style="bottom:0rpx;">
-				<view class="grace-grids" style="width:250rpx;">
+				<view class="grace-grids" style="width:360rpx;">
 					<view class="grace-grids-items grace-grids-items2 grace-relative" @tap="onFavorite">
 						<text :class="(hasFavorite?'has-favorite':'')+'  grace-grids-icon grace-grids-icon2 grace-icons icon-shoucang '"></text>
 						<text :class="(hasFavorite?'has-favorite':'')+ ' grace-grids-text grace-grids-text2'">收藏</text>
@@ -58,8 +58,12 @@
 						</text>
 						<text class="grace-grids-text grace-grids-text2">购物车</text>
 					</view>
+					<view class="grace-grids-items grace-grids-items2 grace-relative" @tap="onShare">
+						<text class="grace-grids-icon grace-grids-icon2 grace-icons icon-share3"></text>
+						<text class="grace-grids-text grace-grids-text2">分享</text>
+					</view>
 				</view>
-				<view class="grace-flex-end" style="width:460rpx;">
+				<view class="grace-flex-end" style="width:350rpx;">
 					<button type="warn" class="grace-footer-button" style="background:#F37B1D;" @tap="onOpt('basket')">加入购物车</button>
 					<button type="warn" class="grace-footer-button" style="background:#259B24;" @tap="onOpt('buy')">立即购买</button>
 				</view>
@@ -69,121 +73,196 @@
 			<view class="grace-icons icon-loading"></view>
 			<text>加载中...</text>
 		</view>
+		
+		<graceBottomDialog :show="showShare" v-on:closeDialog="closeShare">
+			<view slot="content">
+				<view class="grace-select-tags share-opts">
+					<button plain="true" @tap="onShareImage">分享小程序海报</button>
+					<button plain="true" open-type="share">分享小程序</button>
+				</view>
+			</view>
+		</graceBottomDialog>
+		
+		<graceDialog :show="showImage" @closeDialog="closeShowImage">
+			<view slot="content" style="padding:0px;">
+				<image class="share-image" :src="shareImage" mode="aspectFit"></image>
+				<view class="download-view"><button @tap="downloadImage" size="mini" type="primary">点击保存到手机</button></view>
+			</view>
+		</graceDialog>
 	</view>
 </template>
 
 <script>
-	var that ;
-	import graceBottomDialog from '../../graceUI/components/graceBottomDialog.vue';
-	import specsComponent from './specsComponent.vue';
-	import common from "@/common/common.js";
-	
-	import titleComponent from "./titleComponent.vue"
-	import carouseComponent from "./carouseComponent.vue";
-	import detailTitleComponent from "../../components/detailTitleComponent.vue";
-	
-	export default {
-		data() {
-			return {
-				id: 0,
-				product: {},
-				price: {},
-				specsList: [],
-				mediumList: [],
-				showSpecs: false,
-				hasFavorite: false,
-				basketCount: 0, //购物车数量
-				curSpecs: null,
-			}
-		},
-		onLoad(options) {
-			that = this;
-			//console.log(options)
-			this.id = options.id;
-			that.initData();
-		},
-		onShareAppMessage(obj) {
-			const user = common.getLoginUser();
-			console.log(obj, user);
-			return {
-				title: this.product.title,
-				path: '/pages/product/show?id='+this.product.id
-			}
-		},
-		methods: {
-			initData: ()=> {
-				that.$request.get("miniProductService.loadOne", {id: that.id}).then((res) => {
-					that.product = res.product;
-					that.specsList = res.specsList;
-					that.mediumList = res.mediumList;
-					that.price = res.price;
-					that.basketCount = res.basketCount;
-					
-					if(that.specsList.length===1) {that.curSpecs = that.specsList[0]}
-					// that.curSpecs = that.specsList[0]
-					if(res.favorite) {that.hasFavorite = true;}
-				});
-			},
-			showSpecsDialog: () => {
-				that.showSpecs = true;
-			},
-			closeShow: ()=> {that.showSpecs = false;},
-			changeSpecs: (obj) => {
-				//console.log(obj);
-				that.curSpecs = obj;
-			},
-			onOpt: function(action) {
-				const specs = that.curSpecs;
-				const pro = that.product;
-				if(!specs) {
-					that.showSpecs = true;
-				} else {
-					if("buy"===action) {
-						console.log(specs, pro)
-						// const idStr = "_"+specs.id+"_"; //生成
-						uni.navigateTo({
-							url: "../orders/onPay?ids="+specs.id+"&type=direct"
-						})
-					} else {
-						const obj = {proId: pro.id, proTitle: pro.title, proImg: pro.headImgUrl, amount: 1,
-							specsId: specs.id, specsName: specs.name, price: specs.price, oriPrice: specs.oriPrice};
-						that.$request.get("miniShoppingBasketService.add2Basket", obj).then((res)=> {
-							// console.log(res);
-							that.basketCount = that.basketCount + 1; //加入购物车
-							uni.showToast({
-								title:"添加成功", icon:"success",success() {
-									that.showSpecs = false;
-								}
-							})
-						});
-					}
-				}
-				// console.log("=========>"+action, that.curSpecs);
-			},
-			onFavorite: () => {
-				const product = that.product;
-				that.$request.get("miniProductFavoriteRecordService.addOrDelete", {proId: product.id, proTitle: product.title, proImg: product.headImgUrl}).then((res) => {
-					//console.log(res);
-					if(res.action==='save') { that.hasFavorite = true;}
-					else {that.hasFavorite = false;}
-					uni.showToast({
-						title:res.message, icon: 'none'
-					})
-				});
-			},
-			gotoBasket: () => {
-				uni.switchTab({
-					url: "../shoppingBasket/list"
-				})
-			}
-		},
-		components: {
-			titleComponent,
-			carouseComponent,
-			detailTitleComponent,
-			graceBottomDialog, specsComponent
+var that ;
+import graceBottomDialog from '../../graceUI/components/graceBottomDialog.vue';
+import graceDialog from '../../graceUI/components/graceDialog.vue';
+import specsComponent from './specsComponent.vue';
+import common from "@/common/common.js";
+import sharederTools from "@/common/sharederTools.js";
+
+import titleComponent from "./titleComponent.vue"
+import carouseComponent from "./carouseComponent.vue";
+import detailTitleComponent from "../../components/detailTitleComponent.vue";
+import showSharederComponent from "@/components/showSharederComponent.vue"
+
+export default {
+	data() {
+		return {
+			id: 0,
+			product: {},
+			price: {},
+			specsList: [],
+			mediumList: [],
+			showSpecs: false,
+			hasFavorite: false,
+			basketCount: 0, //购物车数量
+			curSpecs: null,
+			
+			showShare: false,
+			showImage: false,
+			shareImage:''
 		}
+	},
+	onLoad(options) {
+		that = this;
+		let sharederId=0;
+		let id = 0;
+		//console.log(options)
+		if(!options.id) { //如果参数中没有id，则是通过扫二维码进入的，需要解析scene参数
+			//scene格式id_sid，即表示产品id_代理id
+			const scene = decodeURIComponent(options.scene)
+			const array = scene.split("_");
+			id = array[0];
+			sharederId = array[1];
+		} else {
+			id = options.id;
+			sharederId = options.sharederId;
+		}
+		this.id = id;
+		this.$refs.sharedComponent.loadShareder(sharederId);
+		that.initData();
+		//console.log(this.sharederId);
+		// sharederTools.checkShare(options);
+		//console.log(this.$shareder)
+	},
+	onShareAppMessage(obj) {
+		const user = common.getLoginUser();
+		// console.log(obj, user);
+		//id:产品ID；sharederId: 分享者的ID
+		return {
+			title: this.product.title,
+			path: '/pages/product/show?id='+this.product.id+"&sharederId="+user.id
+		}
+	},
+	methods: {
+		initData: ()=> {
+			that.$request.get("miniProductService.loadOne", {id: that.id}).then((res) => {
+				that.product = res.product;
+				that.specsList = res.specsList;
+				that.mediumList = res.mediumList;
+				that.price = res.price;
+				that.basketCount = res.basketCount;
+				
+				if(that.specsList.length===1) {that.curSpecs = that.specsList[0]}
+				// that.curSpecs = that.specsList[0]
+				if(res.favorite) {that.hasFavorite = true;}
+			});
+		},
+		onShareImage: function() {
+			const page = ""; //这里输入page值，正常是：pages/product/show
+			that.$request.get("miniShareService.share", {proId: that.id, page: page}).then((res)=> {
+				//console.log(res);
+				if(res.flag=='1') {
+					that.showImage = true;
+					that.showShare = false;
+					that.shareImage = res.url;
+				}
+			});
+		},
+		downloadImage: function() {
+			uni.downloadFile({
+				url: that.shareImage,
+				success:(res)=> {
+					that.showImage = false;//
+					uni.saveImageToPhotosAlbum({
+						filePath: res.tempFilePath,
+						success:()=> {uni.showToast({
+							title: "保存成功", icon:"none"
+						})},
+						fail: ()=> {uni.showToast({
+							title: "保存失败", icon:'none'
+						})}
+					})
+				}
+			})
+			
+		},
+		onShare: function() { //分享
+			that.showShare = true;
+		},
+		closeShowImage: function() {that.showImage = false;},
+		closeShare: function() {that.showShare = false;},
+		showSpecsDialog: () => {
+			that.showSpecs = true;
+		},
+		closeShow: ()=> {that.showSpecs = false;},
+		changeSpecs: (obj) => {
+			//console.log(obj);
+			that.curSpecs = obj;
+		},
+		onOpt: function(action) {
+			const specs = that.curSpecs;
+			const pro = that.product;
+			if(!specs) {
+				that.showSpecs = true;
+			} else {
+				if("buy"===action) {
+					//console.log(specs, pro)
+					// const idStr = "_"+specs.id+"_"; //生成
+					uni.navigateTo({
+						url: "../orders/onPay?ids="+specs.id+"&type=direct"
+					})
+				} else {
+					const obj = {proId: pro.id, proTitle: pro.title, proImg: pro.headImgUrl, amount: 1,
+						specsId: specs.id, specsName: specs.name, price: specs.price, oriPrice: specs.oriPrice};
+					that.$request.get("miniShoppingBasketService.add2Basket", obj).then((res)=> {
+						// console.log(res);
+						that.basketCount = that.basketCount + 1; //加入购物车
+						uni.showToast({
+							title:"添加成功", icon:"success",success() {
+								that.showSpecs = false;
+							}
+						})
+					});
+				}
+			}
+			// console.log("=========>"+action, that.curSpecs);
+		},
+		onFavorite: () => {
+			const product = that.product;
+			that.$request.get("miniProductFavoriteRecordService.addOrDelete", {proId: product.id, proTitle: product.title, proImg: product.headImgUrl}).then((res) => {
+				//console.log(res);
+				if(res.action==='save') { that.hasFavorite = true;}
+				else {that.hasFavorite = false;}
+				uni.showToast({
+					title:res.message, icon: 'none'
+				})
+			});
+		},
+		gotoBasket: () => {
+			uni.switchTab({
+				url: "../shoppingBasket/list"
+			})
+		}
+	},
+	components: {
+		titleComponent,
+		carouseComponent,
+		detailTitleComponent,
+		graceBottomDialog, specsComponent,
+		showSharederComponent,graceDialog
 	}
+}
 </script>
 
 <style>
@@ -272,4 +351,14 @@ text.has-favorite {
 .grace-grids-icon2{height:50rpx; line-height:50rpx; font-size:40rpx; color:#6B7375;}
 .grace-grids-text2{line-height:28rpx; font-size:24rpx; margin-top:2px; color:#6B7375;}
 
+
+.share-opts button {
+	background:none; border:none; border:0px;
+}
+.share-image {
+	margin:0px; width:100%;
+}
+.download-view {
+	width:100%; padding-top:15px; text-align: center; padding-bottom:10px;
+}
 </style>

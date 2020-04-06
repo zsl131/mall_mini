@@ -1,9 +1,9 @@
 {
-    "name" : "特产电商",
+    "name" : "满山晴",
     "appid" : "__UNI__D7015A3",
-    "description" : "",
-    "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "description" : "新鲜水果、天然特产；正宗特产请认准原产地发货，请认证《满山晴》",
+    "versionName" : "1.0.1",
+    "versionCode" : 101,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -55,7 +55,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxdc7b00047690374f",
+        "appid" : "wxd21fe3dfc1a8841e",
         "setting" : {
             "urlCheck" : false
         },
@@ -69,5 +69,10 @@
     },
     "mp-toutiao" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "uniStatistics" : {
+            "enable" : true
+        }
     }
 }

@@ -1,7 +1,8 @@
 <template>
 	<view>
-		<view class="zsl-remark" v-if="!applyObj">
+		<view class="zsl-remark" v-if="!applyObj || !applyObj.id">
 			共享经济就是把身边的有限资源进行无限扩大并实现变现的一种生活方式。
+			<view style="font-size: 14px;">终于等到你！！！我很乐意为您服务，马上您就可以当甩手老板啦~</view>
 		</view>
 		<view class="zsl-alter zsl-alter-error" v-if="(applyObj && applyObj.status==='2')">
 			驳回原因：{{verifyList[0].content}}
@@ -89,6 +90,7 @@ let that ;
 const frontName = "身份证正面", backName = "身份证背面";
 import graceAddressPicker from '@/graceUI/components/graceAddressPicker.vue';
 const  graceChecker = require("@/graceUI/jsTools/graceChecker.js");
+import sharederTools from "@/common/sharederTools.js";
 export default {
 	props: {
 		curObj: {
@@ -166,16 +168,6 @@ export default {
 		},
 		initAddress: function() {
 			const obj = that.applyObj;
-			/* const array = obj.addressIndex.split("-");
-			if(array) {
-				let vals = [];
-				array.map((item,index)=>vals[index]=parseInt(item));
-				that.defaultVal = vals;
-				const value = {detail: {value: vals}};
-				console.log(value);
-				//that.$refs.graceAddressPicker.change(value);
-				///console.log(that.cityPickerValueDefault1);
-			} */
 			if(obj) {
 				const cityText = obj.provinceName+" "+obj.cityName+" "+obj.countyName;
 				that.area = cityText;
@@ -256,6 +248,13 @@ export default {
 					
 					that.uploadImgs(uploadPaths).then((data) => {
 						///console.log(data);
+						const shareder = sharederTools.loadShare();
+						if(shareder) { //如果有分享者，则需要设置上级代理
+							formData.leaderId=shareder.id;
+							formData.leaderOpenid=shareder.openid;
+							formData.leaderName=shareder.name;
+							formData.leaderPhone=shareder.phone;
+						}
 						formData.papers = data;
 						const apiCode = (formData.id && formData.id>0)?"miniAgentService.updateAgent":"miniAgentService.addAgent"
 						that.$request.get(apiCode, formData).then((res)=> {
@@ -303,34 +302,6 @@ export default {
 			//console.log(e)
 			this.expIndex = e.detail.value;
 		},
-		/* cityPicker1 : function(){
-			this.$refs.mpvueCityPicker1.show();
-		},
-		onConfirm1(e) {
-			const code = e.cityCode;
-			const labels = e.label.split("-");
-			const addressIndex = e.value.join("-");
-			//console.log(addressIndex);
-			
-			let address = {};
-			address.addressIndex = addressIndex;
-			address.provinceCode = code.substring(0,2)+"0000";
-			address.provinceName = labels[0];
-			address.cityCode = code.substring(0,4)+"00";
-			address.cityName = labels[1];
-			address.countyCode = code;
-			address.countyName = labels[2];
-			
-			this.address = address;
-			
-			const cityText1  = e.label;
-			const cityValue1 = e.value;
-			// var cityCode1  = e.cityCode;
-			//console.log(cityText1, cityValue1, cityCode1);
-			this.cityText1 = cityText1;
-			this.cityPickerValueDefault1 = cityValue1;
-			//this.city1 = e;
-		}, */
 		
 		selectImg1 : function() { //选择正面
 			uni.chooseImage({

@@ -269,8 +269,8 @@ export default {
 }
 .opt-btns-view {
 	display: flex; margin-left: 10px; height: 30px; padding: 0px 10px; border-radius: 20px; margin-top: 6px;
-	color:#FFF;
-	background:#ff7800; 
+	color:#FFFFFF;
+	background:#2cae5d; 
 }
 .opt-btns-view view {
 	flex: 1; height: 16px; line-height: 16px; margin-top: 7px;
@@ -280,7 +280,7 @@ export default {
 	font-size: 14px; text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0; color:#FFF;
 	letter-spacing: 2px; */
 	/* background:# */
-	padding-right: 7px; border-right: 1px #f7a154 solid;
+	padding-right: 7px; border-right: 1px #FFFFFF solid;
 }
 .show-custom {
 	text-align: center;
