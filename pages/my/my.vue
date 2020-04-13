@@ -111,10 +111,10 @@
 </template>
 <script>
 var that;
-import gracePage from "../../graceUI/components/gracePage.vue";
-import graceBoxBanner from "../../graceUI/components/graceBoxBanner.vue";
-import graceDialog from '../../graceUI/components/graceDialog.vue';
-import graceBottomDialog from '../../graceUI/components/graceBottomDialog.vue';
+import gracePage from "@/graceUI/components/gracePage.vue";
+import graceBoxBanner from "@/graceUI/components/graceBoxBanner.vue";
+import graceDialog from '@/graceUI/components/graceDialog.vue';
+import graceBottomDialog from '@/graceUI/components/graceBottomDialog.vue';
 import bindPhoneComponent from './bindPhoneComponent.vue';
 import config from "@/common/config.js";
 export default{

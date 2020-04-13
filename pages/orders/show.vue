@@ -32,7 +32,8 @@
 					<button size="mini" @tap="onOpt('1', orders.ordersNo, orders.id)" v-if="orders.status=='1'" class="orders-opt">崔发货</button>
 					<button size="mini" @tap="onOpt('-1', orders.ordersNo, orders.id)" type="default" v-if="orders.status=='2'" class="orders-opt">物流信息</button>
 					<button size="mini" @tap="onOpt('2', orders.ordersNo, orders.id)" type="primary" v-if="orders.status=='2'" class="orders-opt">确认收货</button>
-					<view v-if="orders.status=='3'" class="orders-opt opt-gopay">订单已完成</view>
+					<button size="mini" @tap="onOpt('3', orders.ordersNo, orders.id)" type="default" v-if="orders.status=='3'" class="orders-opt">评价</button>
+					<view v-if="orders.status=='4'" class="orders-opt opt-gopay">订单已完成</view>
 				</view>
 			</view>
 		</view>
@@ -44,6 +45,12 @@
 		<view class="recommend-pro-view">
 			<ProductListComponent disableTitle="true" titleIcon="icon-shuiguopingguo" titleName="精品推荐" :proList="recommendList"/>
 		</view>
+		
+		<graceDialog :show="showComment" title="点评">
+			<view slot="content">
+				<commentComponent :ordersNo="commentOrdersNo" @cancel="onCancel" @ok="onOk"/>
+			</view>
+		</graceDialog>
 	</view>
 </template>
 
@@ -51,6 +58,8 @@
 var that;
 import payTools from '@/common/payTools.js';
 import common from "@/common/common.js";
+import graceDialog from '@/graceUI/components/graceDialog.vue';
+import commentComponent from "./commentComponent.vue";
 import ProductListComponent from "../index/ProductListComponent.vue";
 export default {
 	data() {
@@ -59,6 +68,11 @@ export default {
 			orders:{},
 			proList:[],
 			recommendList:[], //推荐产品
+			
+			showComment: false,
+			commentOrdersNo:0,
+			
+			commented:[], //已经点评的订单
 		}
 	},
 	onLoad(options) {
@@ -69,24 +83,37 @@ export default {
 	methods: {
 		loadData: function() {
 			that.$request.get("miniOrdersService.loadOne", {id: that.id}).then((res)=> {
-				console.log(res);
+				//console.log(res);
 				that.orders = res.orders;
 				that.proList = res.proList;
 				that.recommendList = res.recommendList;
 			})
 		},
+		onCancel: function() {
+			//console.log("---")
+			this.showComment = false;
+		},
+		onOk: function(value) {
+			let commented = that.commented;
+			commented.push(value);
+			that.commented = commented;
+			//console.log(value)
+			that.showComment = false;
+		},
 		getStatusCls: function(status) {
 			let cls = 'status-default'; //默认值，即未付款
 			if(status=='1') {cls = 'status-payed';} //已付款
 			else if(status=='2') {cls = 'status-sended';} //已发货
-			else if(status='3') {cls = 'status-end'}; //已完成
+			else if(status=='3') {cls = 'status-reply';} //需评价
+			else if(status=='4') {cls = "status-end"; } //已完成
 			return cls;
 		},
 		getStatus: function(status) {
 			let res = "未付款";
 			if(status=='1') {res = '已付款';}
 			else if(status=='2') {res = '已发货';}
-			else if(status=='3') {res = '已完成';}
+			else if(status=='3') {res = '待评价';}
+			else if(status=='4') {res = '已完成';}
 			return res;
 		},
 		onOpt: function(status, ordersNo, id) {
@@ -115,6 +142,15 @@ export default {
 						}
 					}
 				})
+			} else if(status=='3') { //评价
+				if(that.commented.includes(ordersNo)) {
+					uni.showToast({
+						title: '不可重复点评', icon:'none'
+					})
+				} else {
+					that.commentOrdersNo = ordersNo;
+					that.showComment = true;
+				}
 			}
 		},
 		togoExtend: function() { //跳转到关注公众号页面
@@ -124,7 +160,8 @@ export default {
 		}
 	},
 	components: {
-		ProductListComponent
+		ProductListComponent,
+		graceDialog,commentComponent
 	}
 }
 </script>

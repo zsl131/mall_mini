@@ -232,7 +232,7 @@
 	        }, {
 	            "name": "listOrders", //模式名称
 	            "path": "pages/orders/listOrders", //启动页面，必选
-	            "query": "id=2&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
+	            "query": "type=4&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 	        }, {
 	            "name": "showOrders", //模式名称
 	            "path": "pages/orders/show", //启动页面，必选

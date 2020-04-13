@@ -42,7 +42,8 @@
 							<button size="mini" @tap="onOpt('1', order.orders.ordersNo, order.orders.id)" v-if="order.orders.status=='1'" class="orders-opt">崔发货</button>
 							<button size="mini" @tap="onOpt('-1', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='2'" class="orders-opt">物流信息</button>
 							<button size="mini" @tap="onOpt('2', order.orders.ordersNo, order.orders.id)" type="primary" v-if="order.orders.status=='2'" class="orders-opt">确认收货</button>
-							<view v-if="order.orders.status=='3'" class="orders-opt opt-gopay">订单已完成</view>
+							<button size="mini" @tap="onOpt('3', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='3'" class="orders-opt">评价</button>
+							<view v-if="order.orders.status=='4'" class="orders-opt opt-gopay">订单已完成</view>
 						</view>
 					</view>
 				</view>
@@ -52,6 +53,12 @@
 				<graceLoading :loadingType="loadingType"></graceLoading>
 			</view>
 		</gracePage>
+		
+		<graceDialog :show="showComment" title="点评">
+			<view slot="content">
+				<commentComponent :ordersNo="commentOrdersNo" @cancel="onCancel" @ok="onOk"/>
+			</view>
+		</graceDialog>
 	</view>
 </template>
 
@@ -61,12 +68,14 @@ import gracePage from "@/graceUI/components/gracePage.vue";
 import graceLoading from '@/graceUI/components/graceLoading.vue';
 import segmentedControl from '@/components/segmentedControl.vue';
 import emptyCompent from "@/components/emptyComponent.vue";
+import graceDialog from '@/graceUI/components/graceDialog.vue';
+import commentComponent from "./commentComponent.vue";
 import payTools from '@/common/payTools.js';
 import common from "@/common/common.js";
 export default {
 	data() {
 		return {
-			cates : ["全部", "待付款", "待发货", "待评价"],
+			cates : ["全部", "待付款", "待发货", "待确认", "待评价"],
 			type: 0,
 			page: 0,
 			orders: [], //订单列表
@@ -75,10 +84,17 @@ export default {
 			canPage: true,
 			loadingType: '3',
 			append: true,
+			showComment: false,
+			commentOrdersNo:0,
+			
+			commented:[], //已经点评的订单
 		}
 	},
 	onLoad(options) {
 		that = this;
+		let type = options.type;
+		if(!type) {type = 0;}
+		that.type = type;
 		that.loadData();
 	},
 	onReachBottom: function() {
@@ -93,7 +109,19 @@ export default {
 			if(type=='1') {status = '0';}
 			else if(type=='2') {status='1';}
 			else if(type=='3') {status='2';}
+			else if(type=='4') {status='3';}
 			return status;
+		},
+		onCancel: function() {
+			//console.log("---")
+			this.showComment = false;
+		},
+		onOk: function(value) {
+			let commented = that.commented;
+			commented.push(value);
+			that.commented = commented;
+			//console.log(value)
+			that.showComment = false;
 		},
 		loadData: function() {
 			if(that.canPage) {
@@ -133,14 +161,16 @@ export default {
 			let cls = 'status-default'; //默认值，即未付款
 			if(status=='1') {cls = 'status-payed';} //已付款
 			else if(status=='2') {cls = 'status-sended';} //已发货
-			else if(status='3') {cls = 'status-end'}; //已完成
+			else if(status=='3') {cls = 'status-reply';} //需评价
+			else if(status=='4') {cls = "status-end"; } //已完成
 			return cls;
 		},
 		getStatus: function(status) {
 			let res = "未付款";
 			if(status=='1') {res = '已付款';}
 			else if(status=='2') {res = '已发货';}
-			else if(status=='3') {res = '已完成';}
+			else if(status=='3') {res = '待评价';}
+			else if(status=='4') {res = '已完成';}
 			return res;
 		},
 		onOpt: function(status, ordersNo, id) {
@@ -164,11 +194,20 @@ export default {
 					success: function(res) {
 						if(res.confirm) {
 							payTools.confirmOrders(ordersNo).then((res)=> {
-								common.reloadPage("../orders/show?id="+id); //刷新当前页面
+								common.reloadPage("../orders/listOrders"); //刷新当前页面
 							})
 						}
 					}
 				})
+			} else if(status=='3') { //评价
+				if(that.commented.includes(ordersNo)) {
+					uni.showToast({
+						title: '不可重复点评', icon:'none'
+					})
+				} else {
+					that.commentOrdersNo = ordersNo;
+					that.showComment = true;
+				}
 			}
 		},
 		
@@ -182,7 +221,9 @@ export default {
 		gracePage,
 		graceLoading,
 		segmentedControl,
-		emptyCompent
+		emptyCompent,
+		graceDialog,
+		commentComponent,
 	}
 }
 </script>
