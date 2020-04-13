@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="column-title" @tap="onClick">
+		<view class="column-title" @tap="onClick" v-if="!disableTitle">
 			<text :class="'zsl-icons column-icon '+titleIcon"></text>
 			<text class="column-title-name">{{titleName}}</text>
 			<view class="more-button zsl-icons icon-right"></view>
@@ -9,7 +9,7 @@
 			<navigator v-for="(item, index) in proList" :key="index" :url="'../product/show?id='+item.id">
 				<view class="single-product">
 					<view class="pro-image">
-						<image :src="item.headImgUrl" mode="aspectFit"/>
+						<image :src="item.headImgUrl" mode="widthFix"/>
 						<view class="count-view">
 							<text class="zsl-icons icon-heart count-icon"></text>
 							<text class="count-value">{{rebuildCount(item)}}</text>
@@ -40,6 +40,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		disableTitle: {
+			type: Boolean,
+			default: false
+		},
 		titleName: {
 			type: String,
 			default: '产品'
@@ -67,8 +71,8 @@ export default {
 }
 </script>
 <style scoped>
-	.column-title {width:100%; height: 40px; line-height: 40px; background: #ffffff; padding-left: 20rpx; position: relative;}
-	.column-icon {color:#34cd6d; font-size: 46rpx;}
+	.column-title {width:100%; height: 40px; line-height: 40px; background: #ffffff; position: relative;}
+	.column-icon {color:#34cd6d; font-size: 46rpx; margin-left: 20rpx;}
 	.column-title-name {color:#393939; font-size:36rpx; margin-left: 20rpx;}
 	.more-button {
 		display: inline-block; position: absolute; right:10px; padding: 0px 8px;
@@ -79,7 +83,7 @@ export default {
 		padding: 20rpx 0px; background:#F4F5F6;
 	}
 	.single-product {
-		width:90%; margin-left: 5%; min-height: 10px; border-radius: 10px;
+		width:calc(100% - 20px); margin-left: 10px; min-height: 10px; border-radius: 10px;
 		box-shadow: 5px 5px 5px 2px #BBBBBB; margin-bottom: 15px;
 	}
 	.pro-image {

@@ -15,12 +15,23 @@
 			</view>
 		</view>
 
+		<!-- 
 		<view class="ucenter-line"></view>
 		<view>
 			<graceBoxBanner :items="items"></graceBoxBanner>
-		</view>
+		</view> 
+		-->
 		<view class="ucenter-line"></view>
 		<view class="grace-list grace-margin-top">
+			<view class="grace-list-items" @tap="gotoFun('orders')">
+				<text class="grace-list-icon grace-icons icon-shoppingcard grace-green"></text>
+				<view class="grace-list-body grace-border-b">
+					<view class="grace-list-title">
+						<text class="grace-list-title-text">我的订单</text>
+					</view>
+				</view>
+				<text class="grace-list-arrow-right grace-icons icon-arrow-right"></text>
+			</view>
 			<view class="grace-list-items" @tap="gotoFun('agent')">
 				<text class="grace-list-icon grace-icons icon-kf1 grace-green"></text>
 				<view class="grace-list-body grace-border-b">
@@ -61,25 +72,27 @@
 		</view>
 		<view class="ucenter-line"></view>
 		<view class="grace-list grace-margin-top">
-			<view class="grace-list-items">
-				<text class="grace-list-icon grace-icons icon-phone grace-red"></text>
+			<view class="grace-list-items" @tap="gotoFun('kf')">
+				<text class="grace-list-icon grace-icons icon-kf3 grace-red"></text>
 				<view class="grace-list-body">
 					<view class="grace-list-title">
-						<text class="grace-list-title-text">手机密保</text>
+						<text class="grace-list-title-text">联系客服</text>
 					</view>
 				</view>
+				<view>{{servicePhone}}</view>
 				<text class="grace-list-arrow-right grace-icons icon-arrow-right"></text>
 			</view>
 			
-			<view class="grace-list-items">
+			<!-- <view class="grace-list-items">
 				<text class="grace-list-icon grace-icons icon-set grace-yellow"></text>
 				<view class="grace-list-body grace-border-b">
 					<view class="grace-list-title">
 						<text class="grace-list-title-text">账户设置</text>
 					</view>
 				</view>
+				<view>400</view>
 				<text class="grace-list-arrow-right grace-icons icon-arrow-right"></text>
-			</view>
+			</view> -->
 			
 		</view>
 		<view class="ucenter-line"></view>
@@ -117,6 +130,8 @@ export default{
 			],
 			showDialog: false,
 			showBottomDialog:false,
+			
+			servicePhone: '4008080987', //客服电话
 		}
 	},
 	onLoad() {
@@ -132,6 +147,8 @@ export default{
 			else if(fun==='agent') {uni.navigateTo({ url: "../agent/apply/apply" })}
 			else if(fun==='favorite') {uni.navigateTo({ url: "./favorite" })}
 			else if(fun==='coupon') {uni.navigateTo({ url: "./coupon" })}
+			else if(fun==='kf') {uni.makePhoneCall({ phoneNumber: this.servicePhone })}
+			else if(fun=='orders') {uni.navigateTo({ url: "../orders/listOrders" })}
 		},
 		bindPhone: function(phone) {
 			//console.log("--------"+phone)

@@ -76,7 +76,7 @@ export default {
 			console.log(that.canPage)
 			if(that.canPage) {
 				that.$request.get("miniImageWallService.listShow", {page: that.page, size: that.size}).then((res) => {
-					console.log(res)
+					//console.log(res)
 					that.type = res.type;
 					if(isAppend) {
 						that.imageList = that.imageList.concat(res.imageList);

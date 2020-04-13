@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<searchComponent/>
-		
+		<showSharederComponent ref="sharedComponent"></showSharederComponent>
 		<carouseComponent :swiperItems="swiperItems"/>
 		<noticeComponent :dataSource="speakerMsgs" v-if="speakerMsgs.length>0"/>
 		<view class="common-line"></view>
@@ -28,6 +28,9 @@ import carouseComponent from "./carouseComponent.vue";
 import noticeComponent from "./noticeComponent.vue";
 import moduleComponent from './moduleComponent.vue';
 import ProductListComponent from './ProductListComponent.vue';
+import showSharederComponent from "@/components/showSharederComponent.vue";
+
+import common from "@/common/common.js";
 
 export default {
 	data() {
@@ -48,14 +51,30 @@ export default {
 	onPageScroll:function(e){
 		this.top = e.scrollTop;
 	},
-	onLoad() {
+	onLoad(options) {
 		that = this;
 		that.loadData();
+		uni.showToast({
+			title: options, icon:'none'
+		})
+		const sharederId=options.sharederId;
+		if(sharederId) {
+			this.$refs.sharedComponent.loadShareder(sharederId);	
+		}
+	},
+	onShareAppMessage(obj) {
+		const user = common.getLoginUser();
+		// console.log(obj, user);
+		//id:产品ID；sharederId: 分享者的ID
+		return {
+			title: "满山晴-产地直发的生鲜水果",
+			path: '/pages/index/index?sharederId='+user.id
+		}
 	},
 	methods: {
 		loadData: function() {
 			that.$request.get("miniIndexService.index", {}).then((res)=> {
-				console.log(res);
+				//console.log(res);
 				that.swiperItems = res.carouseList; //轮播图
 				that.speakerMsgs = res.noticeList; //通知公告
 				that.classes = res.moduleList; //功能模块
@@ -77,6 +96,7 @@ export default {
 		noticeComponent,
 		moduleComponent,
 		ProductListComponent,
+		showSharederComponent,
     }
 }
 </script>

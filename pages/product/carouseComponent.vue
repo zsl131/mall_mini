@@ -44,4 +44,7 @@ export default {
 }
 </script>
 <style scoped>
+.grace-img-in image {
+	width:100%;
+}
 </style>

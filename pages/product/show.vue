@@ -103,7 +103,7 @@ import sharederTools from "@/common/sharederTools.js";
 import titleComponent from "./titleComponent.vue"
 import carouseComponent from "./carouseComponent.vue";
 import detailTitleComponent from "../../components/detailTitleComponent.vue";
-import showSharederComponent from "@/components/showSharederComponent.vue"
+import showSharederComponent from "@/components/showSharederComponent.vue";
 
 export default {
 	data() {
@@ -193,6 +193,12 @@ export default {
 							title: "保存失败", icon:'none'
 						})}
 					})
+				},
+				fail: function(e) {
+					/* uni.showModal({
+						title: '提示-出错',
+						content: JSON.stringify(e)
+					}) */
 				}
 			})
 			

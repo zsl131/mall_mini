@@ -94,10 +94,10 @@ export default {
 	width:100%;
 }
 .title-view {
-	width:100%; padding: 0px 20px; position: fixed; bottom: 00px; z-index: 10; background:#000000;opacity:0.2;
+	width:100%; padding: 0px 20px; position: fixed; bottom: 10px; z-index: 10; background:#000000;opacity:0.2;
 }
 .title-input {
-	width: 80%; padding:10px; text-align:center; font-size: 16px;
+	width: 80%;  text-align:center; font-size: 16px; height: 40px; line-height: 40px;
 	color:#FFFFFF; text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0; color:#FFF;
 }
 .title-view .title-input-placeholder {

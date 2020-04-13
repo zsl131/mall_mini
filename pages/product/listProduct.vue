@@ -33,7 +33,7 @@
 
 <script>
 var that;
-import gracePage from "../../graceUI/components/gracePage.vue";
+import gracePage from "@/graceUI/components/gracePage.vue";
 import graceLoading from '@/graceUI/components/graceLoading.vue';
 import segmentedControl from '@/components/segmentedControl.vue';
 export default {

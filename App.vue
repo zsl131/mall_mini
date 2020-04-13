@@ -5,9 +5,12 @@ export default {
 	onLaunch: function(options) {
 		const agentId = options.query.agentId;
 		const sceneId = options.scene;
+		/* uni.showToast({
+			title: sceneId+"[test]"+agentId, icon:'none'
+		}) */
 		console.log(agentId, sceneId)
 		
-		console.log('App Launch', options);
+		//console.log('App Launch', options);
 		/* uni.showModal({
 			title: '系统提示',
 			content: JSON.stringify(options)

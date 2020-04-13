@@ -63,6 +63,7 @@ import showSharederComponent from "@/components/showSharederComponent.vue"
 import graceBottomDialog from '@/graceUI/components/graceBottomDialog.vue';
 import common from "@/common/common.js";
 import sharederTools from "@/common/sharederTools.js";
+import payTools from '@/common/payTools.js';
 export default {
 	data() {
 		return {
@@ -79,6 +80,8 @@ export default {
 			ordersKey: '', //订单密钥
 			curCoupon: {}, //当前选择的优惠券
 			showCoupon: false, //是否打开优惠券
+			
+			canSubmit: true, //是否可提交
 			
 			remark: '', //提交订单时的参数
 			// couponMoney: '', //优惠金额
@@ -109,7 +112,7 @@ export default {
 		},
 		loadData: function() {
 			this.$request.get("miniOrdersService.onPay", this.query).then((res)=> {
-				console.log(res);
+				//console.log(res);
 				that.basketList = res.basketList;
 				that.specsList = res.specsList;
 				that.address = res.address;
@@ -153,11 +156,31 @@ export default {
 					agentId: 0, //对应代理ID
 					agentOpenid: shareder?shareder.openid:'', //对应的代理Openid
 				}
-				console.log("submitData:::", data);
-				that.$request.get("miniOrdersService.submitOrders", data).then((res)=> {
-					console.log(res);
-				});
+				if(that.canSubmit) {
+					that.canSubmit = false;
+					//console.log("submitData:::", data);
+					that.$request.get("miniOrdersService.submitOrders", data).then((res)=> {
+						//console.log(res);
+						that.waitPay();
+					});
+				}
 			}
+		},
+		waitPay: function() {
+			that.$request.get("miniOrdersService.queryOrdersNo", {ordersKey: that.ordersKey}).then((res)=> {
+				if(res.flag=='1') {
+					payTools.payByOrdersNo(res.ordersNo).then((res)=> {
+						//console.log(res);
+						uni.navigateTo({
+							url:'./listOrders'
+						})
+					})
+				} else {
+					uni.navigateTo({
+						url: './listOrders'
+					})
+				}
+			})
 		},
 		buildDefaultCoupon: function() {
 			const c = {id:0, couponName: "不使用", remark: '本次不使用任何优惠券', worth: ''};
@@ -247,7 +270,7 @@ export default {
 }
 
 .bottom-opts {
-	height: 40px; background:#ffffff; left: 0px; width:100vw; bottom: 0px; position: fixed; line-height: 40px; text-align: right;
+	height: 50px; padding:10px 0px; background:#ffffff; left: 0px; width:100vw; bottom: 0px; position: fixed; line-height: 40px; text-align: right;
 }
 .pay-submit-btn {
 	margin-right: 12px; height: 30px; padding: 8px 10px; margin-left: 10px; border-radius: 15px;

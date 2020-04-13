@@ -15,6 +15,8 @@
 			<view style="padding: 10px">
 			<button @tap="setData(10)">缓存10秒</button>
 			<button @tap="getData()">获取缓存</button>
+			
+			<button @tap="onPay">支付</button>
 			</view>
 		</view>
 	</view>
@@ -57,6 +59,12 @@
 			console.log(common.getCurrentPage());
 		},
 		methods: {
+			onPay: function() {
+				const no = '202004052021593755';
+				this.$request.get("miniTestService.pay",{ordersNo:no}).then((res)=> {
+					console.log(res);
+				})
+			},
 			setData: function(timeout) {
 				common.setStorageTime("test-data1", "123456", timeout);
 				common.setStorageTime("test-data2", {key: 'name', value:"123456", name: "张三11"}, timeout);

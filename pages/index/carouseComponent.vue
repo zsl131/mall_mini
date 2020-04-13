@@ -61,5 +61,11 @@ export default {
 }
 </script>
 <style scoped>
-	.content1{padding:25rpx; font-size:26rpx; text-align:center; line-height:60rpx;background-color:#F8F8F8; display:block;}
+.content1{padding:25rpx; font-size:26rpx; text-align:center; line-height:60rpx;background-color:#F8F8F8; display:block;}
+
+.grace-img-in {
+}
+.grace-img-in image {
+	width:100%;
+}
 </style>

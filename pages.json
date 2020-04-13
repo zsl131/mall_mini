@@ -161,6 +161,28 @@
             	"navigationStyle" : "custom"
             }
         }
+        ,{
+            "path" : "pages/orders/listOrders",
+            "style" : {
+            	"navigationBarTitleText":"我的订单"
+            }
+        }
+        ,{
+            "path" : "pages/orders/show",
+            "style" : {
+            	"navigationBarTitleText":"订单详情"
+            }
+        }
+        ,{
+            "path" : "pages/my/myWeb",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/orders/showExpress",
+            "style" : {
+            	"navigationBarTitleText":"订单物流"
+            }
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
@@ -207,6 +229,18 @@
 	            "name": "imageModify", //模式名称
 	            "path": "pages/imageWall/modify", //启动页面，必选
 	            "query": "id=2&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
+	        }, {
+	            "name": "listOrders", //模式名称
+	            "path": "pages/orders/listOrders", //启动页面，必选
+	            "query": "id=2&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
+	        }, {
+	            "name": "showOrders", //模式名称
+	            "path": "pages/orders/show", //启动页面，必选
+	            "query": "id=3&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
+	        }, {
+	            "name": "showExpress", //模式名称
+	            "path": "pages/orders/showExpress", //启动页面，必选
+	            "query": "id=3&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 	        }
 	    ]
 	}

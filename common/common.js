@@ -133,6 +133,20 @@ function needUserCheck(apiCode) {
 	return needCheck;
 }
 
+/* function reloadPage() {
+	//console.log("-------")
+	let page = getCurrentPages().pop();  //跳转页面成功之后
+	//console.log(page)
+	if (!page) return;  
+	page.onLoad(); //如果页面存在，则重新刷新页面
+} */
+
+function reloadPage(url) {
+	uni.redirectTo({
+		url:url
+	})
+}
+
 export default {
 	getLoginUser: getLoginUser,
 	setStorageTime: setStorageTime,
@@ -143,4 +157,5 @@ export default {
 	gotoTargetPage: gotoTargetPage,
 	needUserCheck: needUserCheck,
 	getRandomKey: getRandomKey,
+	reloadPage: reloadPage,
 }
