@@ -37,7 +37,7 @@
 			<view class="grace-form-item grace-border-b">
 				<view class="grace-form-label">联系电话</view>
 				<view class="grace-form-body">
-					<input type="text" class="grace-form-input" maxlength="11" v-model="applyObj.phone" name="phone" placeholder="请填写联系电话"></input>
+					<input type="text" class="grace-form-input" maxlength="11" v-model="applyObj.phone" name="phone" placeholder="非常关键,提现时使用"></input>
 				</view>
 			</view>
 			<view class="grace-form-item grace-border-b">

@@ -1,43 +1,35 @@
 <template>
-	<view class="main-body">
-		<view class="grace-gtbg-green grace-shadow title-name grace-white">
-			<text class="name">我的等级：</text>
-			<view class="status">
-				<text v-if="applyObj.status==='0'" class="color-dark">等待审核</text>
-				<text v-if="applyObj.status==='1'" class="color-green">{{applyObj.levelId?applyObj.levelName:"未分配级别"}}</text>
-				<text v-if="applyObj.status==='2'" class="color-red">申请被驳回</text>
-			</view>
+	<view>
+		<view v-if="applyObj.status=='1'">
+			<agentCenterComponent :agent="applyObj"></agentCenterComponent>
 		</view>
-		<view class="zsl-card" v-if="applyObj.status!='1'">
-			<view class="zsl-card-header"><span>已申请[<view class="name">{{applyObj.name}}</view>]</span>
-				<view class="zsl-card-header-extra">
-					<b v-if="applyObj.status==='0'" class="color-dark">等待审核</b>
-					<b v-if="applyObj.status==='1'" class="color-green">审核通过</b>
-					<b v-if="applyObj.status==='2'" class="color-red">申请被驳回</b>
+		<view class="main-body grace-body" v-if="applyObj.status!='1'">
+			<view class="grace-gtbg-green grace-shadow title-name grace-white">
+				<text class="name">我的等级：</text>
+				<view class="status">
+					<text v-if="applyObj.status==='0'" class="color-dark">等待审核</text>
+					<text v-if="applyObj.status==='1'" class="color-green">{{applyObj.levelId?applyObj.levelName:"未分配级别"}}</text>
+					<text v-if="applyObj.status==='2'" class="color-red">申请被驳回</text>
 				</view>
 			</view>
-			<view class="zsl-card-body">已申请，等待审核</view>
-			
-			<button type="primary" style="margin: 10px;" size="mini" @tap="bindNotice">点击 开启审核状态通知</button>
-		</view>
-		
-		<view class="zsl-remark" v-if="(levelList && levelList.length>0)">注意：各级代理按照以下标准进行销售提成，此标准会根据整体经营情况进行适当调整，请各代理注意查阅。</view>
-		<view class="show-level-main-view" v-if="(levelList && levelList.length>0)">
-			<view class="show-level-name">
-				<view v-for="(level, index) in levelList" @tap="onChangeLevel(level.id)" :key="index" :class="levelId==level.id?'active':''">{{level.name}}</view>
-			</view>
-			<scroll-view class="show-rate-list" scroll-y="true" @scrolltolower="onPage">
-				<view class="single-rate" v-for="(rate,index) in rateList" :key="index">{{rate.proTitle}}[{{rate.specsName}}] : <text class="amount">{{rate.rate}}</text> 元/{{rate.unitName}}</view>
-				<view class="more-rate">
-					<text v-if="canPage">正在加载...</text>
-					<text v-if="!canPage">这就是底线</text>
+			<view class="zsl-card" v-if="applyObj.status!='1'">
+				<view class="zsl-card-header"><span>已申请[<view class="name">{{applyObj.name}}</view>]</span>
+					<view class="zsl-card-header-extra">
+						<b v-if="applyObj.status==='0'" class="color-dark">等待审核</b>
+						<b v-if="applyObj.status==='1'" class="color-green">审核通过</b>
+						<b v-if="applyObj.status==='2'" class="color-red">申请被驳回</b>
+					</view>
 				</view>
-			</scroll-view>
+				<view class="zsl-card-body">已申请，等待审核</view>
+				
+				<!-- <button type="primary" style="margin: 10px;" size="mini" @tap="bindNotice">点击 开启审核状态通知</button> -->
+			</view>
 		</view>
 	</view>
 </template>
 <script>
 var that;
+import agentCenterComponent from '../agentCenterComponent.vue';
 export default {
 	props: {
 		applyObj: {
@@ -112,6 +104,9 @@ export default {
 			// console.log("--------")
 			that.loadData(true);
 		},
+	},
+	components: {
+		agentCenterComponent
 	}
 }
 </script>
@@ -133,30 +128,6 @@ export default {
 }
 .title-name .status text {
 	color:#FFF; font-size:14px;
-}
-
-.show-level-main-view {
-	width:100%; border:1px #ddd solid; margin-top:12px;
-}
-.show-level-name {
-	display: flex; 
-}
-.show-level-name view {
-	flex:1; background:#f4f4f4; color:#888; text-align:center; height: 35px; line-height: 35px;
-}
-.show-level-name view.active {
-	background:#ff7800; color:#FFF;
-}
-
-
-.show-rate-list {
-	height: calc(100vh - 120px);
-}
-.single-rate {
-	line-height: 25px; padding: 8px 8px; border-bottom: 1px #ddd dotted; font-size:14px;
-}
-.single-rate .amount {
-	font-size: 14px; color:#F00; font-weight: bold;
 }
 
 .more-rate {

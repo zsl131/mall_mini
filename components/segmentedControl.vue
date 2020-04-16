@@ -47,6 +47,6 @@ export default{
 }
 </script>
 <style scoped>
-.gui-segmented-Control{display:flex; flex-direction:row; flex-wrap:nowrap; background-color:#F5F6F8; border-radius:10rpx; padding:6rpx; width:100%;}
+.gui-segmented-Control{display:flex; flex-direction:row; flex-wrap:nowrap; background-color:#F5F6F8; border-radius:10rpx; padding:6rpx; width:(100% - 12rpx);}
 .gui-segmented-Control-item{width:700rpx; text-align:center; border-radius:8rpx;}
 </style>

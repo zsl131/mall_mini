@@ -1,6 +1,7 @@
 <template>
 	<view class="show-main-view">
-		<view class="recommend-extend-view" @tap="togoExtend">点击关注“满山晴”公众号，接收物流信息</view>
+		<!-- <view class="recommend-extend-view" @tap="togoExtend">点击关注“满山晴”公众号，接收物流信息</view> -->
+		<extendComponent msg="物流"></extendComponent>
 		<view class="orders-address-view"><text class="label">收件人：</text>{{orders.addressCon}}</view>
 		<view class="orders-view">
 			<view class="single-orders-view">
@@ -61,6 +62,7 @@ import common from "@/common/common.js";
 import graceDialog from '@/graceUI/components/graceDialog.vue';
 import commentComponent from "./commentComponent.vue";
 import ProductListComponent from "../index/ProductListComponent.vue";
+import extendComponent from "../my/extendComponent.vue"
 export default {
 	data() {
 		return {
@@ -153,15 +155,12 @@ export default {
 				}
 			}
 		},
-		togoExtend: function() { //跳转到关注公众号页面
-			uni.navigateTo({
-				url: '../my/myWeb?src='+encodeURI("https://mp.weixin.qq.com/s/eFhWaoqFBtiBUegLPonBtw")
-			})
-		}
+		
 	},
 	components: {
 		ProductListComponent,
-		graceDialog,commentComponent
+		graceDialog,commentComponent,
+		extendComponent
 	}
 }
 </script>
@@ -169,11 +168,6 @@ export default {
 <style>
 .show-main-view {
 	min-height: calc(100vh - 20px); background:#f8f8f8; padding:10px;
-}
-
-.recommend-extend-view {
-	background:#f6d2c4; margin-bottom: 10px; border-radius: 6px; padding:10px;
-	color:#bb4114;
 }
 
 .orders-address-view {

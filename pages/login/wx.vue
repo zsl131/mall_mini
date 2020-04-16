@@ -10,7 +10,7 @@
 					<view class="zsl-icons icon-arrow-right-wide"></view>
 				</view>
 				<view class="demo2">
-					<image src="../../static/logo.png" mode="aspectFit"></image>
+					<image src="../../static/logo-72.png" mode="aspectFit"></image>
 				</view>
 			</view>
 			

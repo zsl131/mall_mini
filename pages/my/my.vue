@@ -15,12 +15,12 @@
 			</view>
 		</view>
 
-		<!-- 
+		
 		<view class="ucenter-line"></view>
 		<view>
-			<graceBoxBanner :items="items"></graceBoxBanner>
+			<boxBannerComponent :items="countList" @onClick="onClick"></boxBannerComponent>
 		</view> 
-		-->
+		
 		<view class="ucenter-line"></view>
 		<view class="grace-list grace-margin-top">
 			<view class="grace-list-items" @tap="gotoFun('orders')">
@@ -33,7 +33,7 @@
 				<text class="grace-list-arrow-right grace-icons icon-arrow-right"></text>
 			</view>
 			<view class="grace-list-items" @tap="gotoFun('agent')">
-				<text class="grace-list-icon grace-icons icon-kf1 grace-green"></text>
+				<text class="grace-list-icon zsl-icons icon-dailishang2 grace-blue-sky"></text>
 				<view class="grace-list-body grace-border-b">
 					<view class="grace-list-title">
 						<text class="grace-list-title-text">代理中心</text>
@@ -112,10 +112,10 @@
 <script>
 var that;
 import gracePage from "@/graceUI/components/gracePage.vue";
-import graceBoxBanner from "@/graceUI/components/graceBoxBanner.vue";
 import graceDialog from '@/graceUI/components/graceDialog.vue';
 import graceBottomDialog from '@/graceUI/components/graceBottomDialog.vue';
 import bindPhoneComponent from './bindPhoneComponent.vue';
+import boxBannerComponent from '@/components/boxBannerComponent.vue';
 import config from "@/common/config.js";
 export default{
 	data() {
@@ -131,6 +131,8 @@ export default{
 			showDialog: false,
 			showBottomDialog:false,
 			
+			countList: [], //订单数量统计
+			
 			servicePhone: '4008080987', //客服电话
 		}
 	},
@@ -140,8 +142,18 @@ export default{
 		this.custom = custom;
 		this.phone = custom.phone;
 		that = this;
+		that.loadData();
 	},
 	methods: {
+		loadData: function() {
+			that.$request.get("miniCustomerService.me", {}).then((res)=> {
+				console.log(res);
+				that.custom = res.customer;
+				that.countList = res.countList;
+				that.phone = that.custom.phone;
+				uni.setStorageSync(config.CUR_CUSTOM, res.customer);
+			})
+		},
 		gotoFun: function(fun) {
 			if(fun==='address') {uni.navigateTo({ url: "./address" })}
 			else if(fun==='agent') {uni.navigateTo({ url: "../agent/apply/apply" })}
@@ -149,6 +161,12 @@ export default{
 			else if(fun==='coupon') {uni.navigateTo({ url: "./coupon" })}
 			else if(fun==='kf') {uni.makePhoneCall({ phoneNumber: this.servicePhone })}
 			else if(fun=='orders') {uni.navigateTo({ url: "../orders/listOrders" })}
+		},
+		onClick: function(obj) {
+			//console.log(obj)
+			uni.navigateTo({
+				url:"../orders/listOrders?type="+(parseInt(obj.type)+1)
+			})
 		},
 		bindPhone: function(phone) {
 			//console.log("--------"+phone)
@@ -225,7 +243,7 @@ export default{
 		}, 
 	},
 	components:{
-		graceBoxBanner,gracePage,graceDialog,bindPhoneComponent,graceBottomDialog
+		boxBannerComponent,gracePage,graceDialog,bindPhoneComponent,graceBottomDialog
 	}
 }
 </script>
