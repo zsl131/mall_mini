@@ -6,7 +6,7 @@
 		<swiper :vertical="vertical" autoplay="true" circular="true" :interval="interval" :style="{height:height}">
 			<swiper-item v-for="(item, index) in dataSource" :key="index" :style="{height:height}">
 				<navigator 
-				:url="item.url" :open-type="item.opentype"
+				:url="item.url" :open-type="item.navMode"
 				 v-if="item.openMode==='2'"
 				 class="notice-content">{{item.content}}</navigator>
 				 <view class="notice-content" @tap="showNotice(item)" v-if="item.openMode!=='2'">{{item.content}}</view>

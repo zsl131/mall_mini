@@ -3,7 +3,7 @@
 		<view v-if="applyObj.status=='1'">
 			<agentCenterComponent :agent="applyObj"></agentCenterComponent>
 		</view>
-		<view class="main-body grace-body" v-if="applyObj.status!='1'">
+		<view class="agent-main-body" v-if="applyObj.status!='1'">
 			<view class="grace-gtbg-green grace-shadow title-name grace-white">
 				<text class="name">我的等级：</text>
 				<view class="status">
@@ -44,38 +44,15 @@ export default {
 	data() {
 		return {
 			levelId: 0,
-			page: 0,
-			size: 5,
-			
-			canPage: true,
-			rateList: [], //提成标准
 		}
 	},
 	created: function(){
 		that = this;
 		//console.log(that.applyObj)
 		that.levelId = that.applyObj.levelId;
-		that.loadData(false);
+		//that.loadData(false);
 	},
 	methods: {
-		loadData: function(isAppend) {
-			if(that.canPage) {
-				that.$request.get("agentLevelSpecsRateService.queryRate", {page: that.page, size: that.size, levelId: that.levelId}).then((res)=> {
-					//console.log(res);
-					if(res) {
-						if(isAppend) {
-							that.rateList = that.rateList.concat(res.rateList);
-						} else {
-							that.rateList = res.rateList;
-						}
-						that.page = that.page + 1;
-						if(res.rateList.length<=0) {
-							that.canPage = false;
-						}
-					} else {that.canPage = false;}
-				})
-			}
-		},
 		bindNotice: function() {
 			const tempId = "a7uRVse33w7zjMik362eMXJCp8cu45vjpaVNQesish8";
 			uni.requestSubscribeMessage({
@@ -111,8 +88,8 @@ export default {
 }
 </script>
 <style scoped>
-.main-body {
-	width:100%; padding-bottom: 15px;
+.agent-main-body {
+	width:calc(100% - 20px); padding: 10px;
 }
 .name {
 	display: inline-block; font-size:14px;

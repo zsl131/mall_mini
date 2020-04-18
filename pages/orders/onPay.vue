@@ -99,8 +99,8 @@ export default {
 		that.ordersKey = common.getRandomKey();
 		that.$refs.sharedComponent.loadShareder();
 		
-		let tmp = {a:'1'};
-		console.log(tmp.a, tmp.b||"---")
+		//let tmp = {a:'1'};
+		//console.log(tmp.a, tmp.b||"---")
 	},
 	onUnload() {
 		//console.log("on Pay unloaded");

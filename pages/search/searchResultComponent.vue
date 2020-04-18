@@ -103,7 +103,7 @@ export default {
 
 <style>
 .grace-waterfall-item{width:340rpx;}
-.grace-waterfall-img{width:340rpx;}
+.grace-waterfall-img{width:100%;}
 .grace-img-card-item {
 	margin: 10px 0px; background:#FFFFFF; border-radius: 5px;
 	box-shadow: 2px 2px 2px #eee; position: relative;
@@ -119,5 +119,9 @@ export default {
 }
 .sale-mode-current {
 	background:#34CD6D;
+}
+
+.grace-img-card-title {
+	height: auto;
 }
 </style>

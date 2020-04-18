@@ -7,7 +7,7 @@
 			<view class="pro-img">
 				<image :src="item.proImg" class="grace-shoppingcard-goods-image" mode="widthFix"></image>
 			</view>
-			<view class="grace-flex1">
+			<view class="grace-flex1" style="padding-left: 5px;">
 				<view class="grace-nowrap">
 					<view class="grace-flex1 pro-content">
 						<view class="pro-title">{{item.proTitle}}</view>
@@ -90,7 +90,7 @@ export default {
 	width:100px;
 }
 .single-product-view .pro-img image {
-	width:100px;
+	width:100px; border-radius: 5px; 
 }
 .single-product-view:last-child {
 	border-bottom: none;

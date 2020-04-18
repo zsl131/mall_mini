@@ -44,7 +44,7 @@
 			</graceBottomDialog>
 			
 			<detailTitleComponent title="产品详情"/>
-			<view class="product-html" v-html="product.content"></view>
+			<view class="product-html" v-html="proContent"></view>
 			
 			<view class="grace-footer grace-space-between" style="bottom:0rpx;">
 				<view class="grace-grids" style="width:360rpx;">
@@ -74,9 +74,9 @@
 			<text>加载中...</text>
 		</view>
 		
-		<graceBottomDialog :show="showShare" v-on:closeDialog="closeShare">
+		<graceBottomDialog :show="showShare" background="rgba(0, 0, 0, 0)" v-on:closeDialog="closeShare">
 			<view slot="content">
-				<view class="grace-select-tags share-opts">
+				<view class="grace-select-tags share-opts" style="border-top:1px #ddd solid;">
 					<button plain="true" @tap="onShareImage">分享小程序海报</button>
 					<button plain="true" open-type="share">分享小程序</button>
 				</view>
@@ -120,7 +120,8 @@ export default {
 			
 			showShare: false,
 			showImage: false,
-			shareImage:''
+			shareImage:'',
+			proContent: '', //内容
 		}
 	},
 	onLoad(options) {
@@ -157,7 +158,14 @@ export default {
 	methods: {
 		initData: ()=> {
 			that.$request.get("miniProductService.loadOne", {id: that.id}).then((res) => {
+				//console.log(res)
 				that.product = res.product;
+				if(that.product.status!='1') { //如果不是显示的产品，则直接跳转至首页
+					uni.switchTab({
+						url: '../index/index'
+					})
+				}
+				that.rebuildContent(that.product.content);
 				that.specsList = res.specsList;
 				that.mediumList = res.mediumList;
 				that.price = res.price;
@@ -168,14 +176,26 @@ export default {
 				if(res.favorite) {that.hasFavorite = true;}
 			});
 		},
+		rebuildContent: function(con) { //重新设置html内容
+			const oldStr = '<img id="xxx"';
+			while(con.indexOf(oldStr)>=0) {
+				con = con.replace(oldStr, '<img style="max-width:100%;" ');
+			}
+			that.proContent = con;
+		},
 		onShareImage: function() {
-			const page = ""; //这里输入page值，正常是：pages/product/show
+			const page = "pages/product/show"; //这里输入page值，正常是：pages/product/show
+			// const page = ""; //这里输入page值，正常是：pages/product/show
 			that.$request.get("miniShareService.share", {proId: that.id, page: page}).then((res)=> {
 				//console.log(res);
 				if(res.flag=='1') {
 					that.showImage = true;
 					that.showShare = false;
 					that.shareImage = res.url;
+				} else {
+					uni.showToast({
+						title:'生成失败',icon:'none'
+					})
 				}
 			});
 		},
@@ -318,8 +338,10 @@ export default {
 	margin:8px 8px; color:#aaa;
 }
 .product-html {
-	margin: 10px; line-height: 30px; color:#666; font-size: 16px; font-weight: normal; padding-bottom: 80rpx;
+	line-height: 30px; color:#666; font-size: 16px; font-weight: normal;
+	width:calc(100% - 20px); padding: 10px 10px 60px 10px;
 }
+
 text.has-favorite {
 	color:#E00101;
 }

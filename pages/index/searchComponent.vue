@@ -15,7 +15,7 @@
 				</view>
 			</view>
 			<!-- 用户按钮 -->
-			<view class="icons grace-icons icon-user grace-white" @tap="showUser"></view>
+			<button class="icons grace-icons icon-share grace-white share-button" plain="true" open-type="share"></button>
 		</view>
 	</graceHeader>
 </template>
@@ -57,10 +57,13 @@ export default {
 }
 </script>
 <style scoped>
-	.zsl-search {
-		background:#FFF; border-radius: 15px;
-	}
-	.zsl-search-in {
-	}
-	.zsl-search-icon {width: 18px; height: 20px; line-height: 24px; padding-left: 18rpx;}
+.zsl-search {
+	background:#FFF; border-radius: 15px;
+}
+.zsl-search-in {
+}
+.zsl-search-icon {width: 18px; height: 20px; line-height: 24px; padding-left: 18rpx;}
+.share-button {
+	border:0px; border:none; background:none; border-radius:unset; padding:0px;
+}
 </style>
