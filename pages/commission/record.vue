@@ -18,8 +18,19 @@
 						<text class="create-time">{{item.createTime}}</text>
 					</view>
 					<view class="pro-title">{{item.proTitle}}【{{item.specsName}}】</view>
+					<view class="saler-name">销售：{{item.salerName}}</view>
 				</view>
-				<view class="record-money"><text>可提</text>{{item.money}}<text>元</text></view>
+				<view class="record-money">
+					<view><text>可提</text>{{item.money}}<text>元</text></view>
+					<view class="record-status">
+						<text v-if="item.status=='-1'" class="status-cancel">已取消</text>
+						<text v-if="item.status=='0'" class="status-nopay">未付款</text>
+						<text v-if="item.status=='1'" class="status-pay">已付款</text>
+						<text v-if="item.status=='2'" class="status-cash">可提现</text>
+						<text v-if="item.status=='3'" class="status-running">结算中</text>
+						<text v-if="item.status=='4'" class="status-end">已转款</text>
+					</view>
+				</view>
 			</view>
 			<view class="more-rate">
 				<text v-if="canPage">正在加载...</text>
@@ -50,7 +61,7 @@ export default {
 		}
 	},
 	onLoad(options) {
-		console.log(options)
+		//console.log(options)
 		that = this;
 		that.type = options.status;
 		that.genStatus();
@@ -138,6 +149,10 @@ export default {
 	color:#aaa;
 }
 
+.saler-name {
+	color:#666;
+}
+
 .record-money {
 	width: 60px; font-size: 16px; color:#f96900; font-weight: bold;
 }
@@ -151,4 +166,33 @@ export default {
 .more-rate text {
 	color:#aaa; 
 }
+
+.record-status {
+	color:#999; padding-top: 4px; font-size:8px;
+}
+.record-status .status-cancel {
+	color:#aaa;
+}
+.record-status .status-nopay {
+	color:#F00;
+}
+.record-status .status-pay {
+	color:#DE5A29;
+}
+.record-status .status-cash {
+	color:#00B3FF;
+}
+.record-status .status-running {
+	color:#1F9609;
+}
+.record-status .status-end {
+	color:#007AFF;
+}
 </style>
+
+<text v-if="item.status=='-1'" class="status-cancel">已取消</text>
+<text v-if="item.status=='0'" class="status-nopay">未付款</text>
+<text v-if="item.status=='1'" class="status-pay">已付款</text>
+<text v-if="item.status=='2'" class="status-cash">可提现</text>
+<text v-if="item.status=='3'" class="status-running">结算中</text>
+<text v-if="item.status=='4'" class="status-end">已转款</text>

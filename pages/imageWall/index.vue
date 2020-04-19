@@ -162,7 +162,10 @@ export default {
 					const obj = JSON.parse(uploadRes.data).data[0];
 					//console.log(obj)
 					if(obj.id) {
-						uni.navigateTo({
+						/* uni.navigateTo({
+							url: "./modify?id="+obj.id
+						}) */
+						uni.redirectTo({
 							url: "./modify?id="+obj.id
 						})
 					}

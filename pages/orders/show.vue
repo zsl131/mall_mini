@@ -1,5 +1,5 @@
 <template>
-	<view class="show-main-view">
+	<view class="show-main-view" v-if="orders">
 		<!-- <view class="recommend-extend-view" @tap="togoExtend">点击关注“满山晴”公众号，接收物流信息</view> -->
 		<extendComponent msg="物流"></extendComponent>
 		<view class="orders-address-view"><text class="label">收件人：</text>{{orders.addressCon}}</view>
@@ -9,17 +9,20 @@
 					<view class="order-create">{{orders.createTime}}</view>
 					<view :class="[getStatusCls(orders.status), 'order-status']">{{getStatus(orders.status)}}</view>
 				</view>
-				<view class="single-order-pro" v-for="(pro, index2) in proList" :key="index2">
-					<view class="pro-img"><image mode="aspectFit" :src="pro.proImg"/></view>
-					<view class="pro-content">
-						<view class="pro-con-title">{{pro.proTitle}}</view>
-						<view class="pro-con-specs">{{pro.specsName}}</view>
-						<view class="pro-con-fund" v-if="pro.fund>0"><text>公益捐款{{pro.fund}}元</text></view>
+				<view class="single-order-pro-view" v-for="(pro, index2) in proList" :key="index2">
+					<view class="single-order-pro">
+						<view class="pro-img"><image mode="aspectFit" :src="pro.proImg"/></view>
+						<view class="pro-content">
+							<view class="pro-con-title">{{pro.proTitle}}</view>
+							<view class="pro-con-specs">{{pro.specsName}}</view>
+							<view class="pro-con-fund" v-if="pro.fund>0"><text>公益捐款{{pro.fund}}元</text></view>
+						</view>
+						<view class="pro-price">
+							<view class="pro-price-val">￥ <text>{{pro.price}}</text></view>
+							<view class="pro-price-amount">x <text>{{pro.amount}}</text></view>
+						</view>
 					</view>
-					<view class="pro-price">
-						<view class="pro-price-val">￥ <text>{{pro.price}}</text></view>
-						<view class="pro-price-amount">x <text>{{pro.amount}}</text></view>
-					</view>
+					<view class="pro-exception"><text class="exp-btn" @tap="onExcep(orders.ordersNo, pro.id)">申请售后</text></view>
 				</view>
 				<view class="orders-amount-view">
 					<text class="amount">共{{orders.totalCount}}件商品</text>
@@ -78,6 +81,7 @@ export default {
 		}
 	},
 	onLoad(options) {
+		//console.log(options);
 		this.id = options.id;
 		that = this;
 		that.loadData();
@@ -89,6 +93,12 @@ export default {
 				that.orders = res.orders;
 				that.proList = res.proList;
 				that.recommendList = res.recommendList;
+			})
+		},
+		onExcep: function(ordersNo, proId) {
+			console.log(ordersNo, proId)
+			uni.navigateTo({
+				url: "./proException?id="+proId
 			})
 		},
 		onCancel: function() {
@@ -121,7 +131,9 @@ export default {
 		onOpt: function(status, ordersNo, id) {
 			//console.log("------status:"+status)
 			//common.reloadPage();
-			if(status=='0') { //支付
+			if(status=='-2') { //售后
+				
+			} else if(status=='0') { //支付
 				payTools.payByOrdersNo(ordersNo).then((res)=> {
 					//console.log(res);
 					common.reloadPage('../orders/listOrders');
@@ -205,9 +217,19 @@ export default {
 .order-title .status-end {
 	color:#333333;
 }
+.single-order-pro-view {
+	margin-top: 7px; padding-bottom: 12px;
+}
 
+.pro-exception {
+	text-align: right; 
+}
+.pro-exception .exp-btn {
+	border:1px #e5e5e5 solid; width: auto; width:60px; text-align: center; 
+	padding: 5px 10px; border-radius: 5px; background:#fafafa; color:#666; margin-right:15px;
+}
 .single-order-pro {
-	display: flex; margin-top: 7px; padding-bottom: 12px;
+	display: flex; 
 }
 .single-order-pro .pro-img {
 	width:80px; padding:4px;
@@ -275,4 +297,5 @@ export default {
 .orders-remark-view {
 	padding: 5px 10px; color:#777;
 }
+
 </style>

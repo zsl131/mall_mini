@@ -77,6 +77,8 @@ request.get = (apiCode, params, options) => {
 	}
 	
 	params = tools.processParams(params);
+	const isPost = (options && options.method=='post');
+	//console.log(params+"====================="+isPost)
 	
 	uni.showLoading({
 		mask: true,
@@ -86,8 +88,9 @@ request.get = (apiCode, params, options) => {
 	return uni.request({
 		url: config.reqUrl,
 		header: headers,
-		method: 'GET',
-		data: {params: params}
+		method: isPost?"POST":'GET',
+		data: {params: params},
+		// body: isPost?params:'',
 	}).then(res => {
 		uni.hideLoading();
 		//console.log(res);

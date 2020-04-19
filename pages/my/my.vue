@@ -147,7 +147,7 @@ export default{
 	methods: {
 		loadData: function() {
 			that.$request.get("miniCustomerService.me", {}).then((res)=> {
-				console.log(res);
+				//console.log(res);
 				that.custom = res.customer;
 				that.countList = res.countList;
 				that.phone = that.custom.phone;

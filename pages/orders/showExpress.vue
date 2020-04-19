@@ -1,13 +1,13 @@
 <template>
 	<view class="main-view">
-		<view class="normal-block address-view">
+		<view class="normal-block address-view" v-if="express">
 			<text>收货地址：</text>{{express.addressCon}}
 		</view>
-		<view class="normal-block express-company" v-if="!detail.type">
+		<view class="normal-block express-company" v-if="!detail.type && express">
 			{{express.expName}}【{{express.expNo}}】
 			<view><text>说明:</text>暂无任何物流信息</view>
 		</view>
-		<view class="normal-block express-company" v-if="detail.type">
+		<view class="normal-block express-company" v-if="detail && detail.type">
 			{{detail.expName}}【{{detail.number}}】
 			<view><text>PHONE:</text>{{detail.expPhone}}（<text>SITE:</text>{{detail.expSite}}）</view>
 		</view>
@@ -100,5 +100,8 @@ export default {
 .recommend-line text {
 	width: 70px; background:#DE5A29; height: 24px; line-height: 24px; text-align: center; position: absolute;
 	top: -12px; left: 50%; margin-left: -35px; color:#FFF; border-radius: 8px;
+}
+.recommend-pro-view {
+	width:100%; background:#FFFFFF; min-height: 100px; border-radius:10px; margin-top: 25px;
 }
 </style>

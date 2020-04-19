@@ -45,6 +45,8 @@
 			
 			<detailTitleComponent title="产品详情"/>
 			<view class="product-html" v-html="proContent"></view>
+			<detailTitleComponent background="#FFFFFF" title="这里就是底线"/>
+			<view style="padding-bottom: 60px; width:100%;"></view>
 			
 			<view class="grace-footer grace-space-between" style="bottom:0rpx;">
 				<view class="grace-grids" style="width:360rpx;">
@@ -339,7 +341,7 @@ export default {
 }
 .product-html {
 	line-height: 30px; color:#666; font-size: 16px; font-weight: normal;
-	width:calc(100% - 20px); padding: 10px 10px 60px 10px;
+	width:calc(100% - 20px); padding: 10px 10px 10px 10px;
 }
 
 text.has-favorite {
