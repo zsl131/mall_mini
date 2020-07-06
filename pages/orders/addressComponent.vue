@@ -8,7 +8,9 @@
 					<text class="phone">{{address.phone}}</text>
 				</view>
 				<view class="address-con">
-					{{address.provinceName}}{{address.cityName}}{{address.countyName}}{{address.street}}
+					{{address.provinceName?address.provinceName:""}}
+					{{address.cityName?address.cityName:""}}
+					{{address.countyName?address.countyName:""}}{{address.street}}
 				</view>
 			</view>
 			<view class="grace-flex1 no-address" v-if="!address || !address.id">

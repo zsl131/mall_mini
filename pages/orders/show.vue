@@ -1,5 +1,5 @@
 <template>
-	<view class="show-main-view" v-if="orders">
+	<view class="show-main-view" v-if="orders && orders.id">
 		<!-- <view class="recommend-extend-view" @tap="togoExtend">点击关注“满山晴”公众号，接收物流信息</view> -->
 		<extendComponent msg="物流"></extendComponent>
 		<view class="orders-address-view"><text class="label">收件人：</text>{{orders.addressCon}}</view>
@@ -22,18 +22,19 @@
 							<view class="pro-price-amount">x <text>{{pro.amount}}</text></view>
 						</view>
 					</view>
-					<view class="pro-exception"><text class="exp-btn" @tap="onExcep(orders.ordersNo, pro.id)">申请售后</text></view>
+					<view class="pro-exception" v-if="orders.status=='2' || orders.status=='3'"><text class="exp-btn" @tap="onExcep(orders.ordersNo, pro.id)">申请售后</text></view>
 				</view>
 				<view class="orders-amount-view">
 					<text class="amount">共{{orders.totalCount}}件商品</text>
-					<text class="money">合计：￥<text>{{orders.totalMoney}}</text></text>
+					<text class="discount" v-if="orders.discountMoney && orders.discountMoney>0">，优惠：{{orders.discountMoney}} 元</text>
+					<text class="money">，合计：￥<text v-if="orders.discountMoney && orders.discountMoney>0">{{orders.totalMoney-orders.discountMoney}}</text><text v-if="!orders.discountMoney || orders.discountMoney<=0">{{orders.totalMoney}}</text> 元</text>
 				</view>
 				<view v-if="orders.remark" class="orders-remark-view">
 					PS:{{orders.remark}}
 				</view>
 				<view class="orders-opts">
 					<button size="mini" @tap="onOpt('0', orders.ordersNo, orders.id)" type="warn" v-if="orders.status=='0'" class="orders-opt">付款</button>
-					<button size="mini" @tap="onOpt('1', orders.ordersNo, orders.id)" v-if="orders.status=='1'" class="orders-opt">崔发货</button>
+					<button size="mini" @tap="onOpt('1', orders.ordersNo, orders.id)" v-if="orders.status=='1'" class="orders-opt">提醒发货</button>
 					<button size="mini" @tap="onOpt('-1', orders.ordersNo, orders.id)" type="default" v-if="orders.status=='2'" class="orders-opt">物流信息</button>
 					<button size="mini" @tap="onOpt('2', orders.ordersNo, orders.id)" type="primary" v-if="orders.status=='2'" class="orders-opt">确认收货</button>
 					<button size="mini" @tap="onOpt('3', orders.ordersNo, orders.id)" type="default" v-if="orders.status=='3'" class="orders-opt">评价</button>
@@ -118,6 +119,9 @@ export default {
 			else if(status=='2') {cls = 'status-sended';} //已发货
 			else if(status=='3') {cls = 'status-reply';} //需评价
 			else if(status=='4') {cls = "status-end"; } //已完成
+			else if(status=='-1') {cls = "status-canceled";} //闭关
+			else if(status=='-2') {cls = "status-saled";} //有售后
+			else if(status=='-10') {cls = "status-saled";} //已删除
 			return cls;
 		},
 		getStatus: function(status) {
@@ -126,6 +130,9 @@ export default {
 			else if(status=='2') {res = '已发货';}
 			else if(status=='3') {res = '待评价';}
 			else if(status=='4') {res = '已完成';}
+			else if(status=='-1') {res = "已关闭";}
+			else if(status=='-2') {res = "有售后";}
+			else if(status=='-10') {res = "已删除";}
 			return res;
 		},
 		onOpt: function(status, ordersNo, id) {
@@ -217,6 +224,12 @@ export default {
 .order-title .status-end {
 	color:#333333;
 }
+.order-title .status-canceled {
+	color:#888888;
+}
+.order-title .status-saled {
+	color:#E17F00;
+}
 .single-order-pro-view {
 	margin-top: 7px; padding-bottom: 12px;
 }
@@ -270,6 +283,9 @@ export default {
 	width:100%; text-align: right; 
 }
 .orders-amount-view text {
+	padding-left: 5px; font-size:12px; color:#555;
+}
+.orders-amount-view text.discount {
 	padding-left: 5px; font-size:12px; color:#555;
 }
 .orders-amount-view text.money text {

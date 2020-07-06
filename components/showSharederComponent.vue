@@ -23,7 +23,11 @@ export default {
 	},
 	methods: {
 		loadShareder: function(id) {
+			//console.log("---------->",id)
+			const curCustom = uni.getStorageSync(config.CUR_CUSTOM);
+			//console.log(curCustom, "----------")
 			if(id) {
+				//if(curCustom) {
 				that.$request.get("customerService.loadOne",{id:id}).then((res)=> {
 					//console.log(res)
 					if(res.obj) { //获取到分享者就将其存入Session中
@@ -36,6 +40,7 @@ export default {
 						that.show = true;
 					}
 				});
+				//}
 			} else {
 				const obj = sharederTools.loadShare();
 				//console.log("=============")

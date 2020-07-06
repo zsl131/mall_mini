@@ -12,6 +12,7 @@
 					<view class="grace-flex1 pro-content">
 						<view class="pro-title">{{item.proTitle}}</view>
 						<view class="pro-specs-name">{{item.specsName}}</view>
+						<view class="pro-specs-count">库存：{{buildCount(item)}}</view>
 					</view>
 					<view class="pro-price">
 						<view class="price">￥{{item.price}}</view>
@@ -45,14 +46,17 @@ export default {
 	data() {
 		return {
 			data: [],
+			specsList: [], 
 		}
 	},
 	created() {
 		that = this;
 	},
 	methods: {
-		initData: function(productList) {
+		initData: function(productList, specsList) {
+			//console.log(specsList)
 			this.data = productList;
+			this.specsList = specsList;
 		},
 		changeAmount: function(obj, amount) {
 			//console.log(amount, obj);
@@ -60,6 +64,16 @@ export default {
 				this.rebuildData(obj.key, amount);
 			}
 		}, 
+		buildCount: function(item) {
+			//console.log(item)
+			let res = 0;
+			//console.log(this.specsList)
+			this.specsList.map((obj)=> {
+				if(obj.id==item.specsId) {res = obj.amount;}
+			});
+			if(res<0) {res = 0;}
+			return res;
+		},
 		rebuildData: function(key, amount) {
 			const data = [];
 			this.data.map((item)=> {
@@ -124,5 +138,8 @@ export default {
 }
 .delivery-date {
 	padding-top: 5px; color:#a20;
+}
+.pro-specs-count {
+	color:#888; margin-top: 5px;
 }
 </style>

@@ -7,8 +7,8 @@
 			<view class="product-content">
 				<view class="price-content grace-nowrap">
 					<view class="" style="width:60%;">
-						<view class="pro-price"><text class="logo">￥</text> {{price.minPrice}} - {{price.maxPrice}}</view>
-						<view class="pro-ori-price">价格：<text>￥ {{price.minOriPrice}}-{{price.maxOriPrice}}</text></view>
+						<view class="pro-price"><text class="logo">￥</text> {{buildShowPrice(price.minPrice,price.maxPrice)}}<!-- {{price.minPrice}} - {{price.maxPrice}} --></view>
+						<view class="pro-ori-price">价格：<text>￥ {{buildShowPrice(price.minOriPrice, price.maxOriPrice)}}<!-- {{price.minOriPrice}}-{{price.maxOriPrice}} --></text></view>
 					</view>
 					<view class="grace-flex1 pro-fund" v-if="product.fund>0"><text class="zsl-icons icon-nashuichouhuayouhua"/> <text class="fund-value">公益：{{product.fund}}</text></view>
 				</view>
@@ -50,9 +50,13 @@
 			
 			<view class="grace-footer grace-space-between" style="bottom:0rpx;">
 				<view class="grace-grids" style="width:360rpx;">
-					<view class="grace-grids-items grace-grids-items2 grace-relative" @tap="onFavorite">
+					<!-- <view class="grace-grids-items grace-grids-items2 grace-relative" @tap="onFavorite">
 						<text :class="(hasFavorite?'has-favorite':'')+'  grace-grids-icon grace-grids-icon2 grace-icons icon-shoucang '"></text>
 						<text :class="(hasFavorite?'has-favorite':'')+ ' grace-grids-text grace-grids-text2'">收藏</text>
+					</view> -->
+					<view class="grace-grids-items grace-grids-items2 grace-relative" @tap="gotoIndex">
+						<text class="grace-grids-icon grace-grids-icon2 grace-icons icon-home"></text>
+						<text class="grace-grids-text grace-grids-text2">首页</text>
 					</view>
 					<view class="grace-grids-items grace-grids-items2 grace-relative" @tap="gotoBasket">
 						<text class="grace-grids-icon grace-grids-icon2 grace-icons icon-shoppingcard">
@@ -184,6 +188,18 @@ export default {
 				con = con.replace(oldStr, '<img style="max-width:100%;" ');
 			}
 			that.proContent = con;
+		},
+		buildShowPrice: function(minPrice, maxPrice) {
+			if(minPrice==maxPrice) {
+				return minPrice;
+			} else {
+				return minPrice + " - " + maxPrice;
+			}
+		},
+		gotoIndex: function() {
+			uni.switchTab({
+				url: "../index/index"
+			})
 		},
 		onShareImage: function() {
 			const page = "pages/product/show"; //这里输入page值，正常是：pages/product/show

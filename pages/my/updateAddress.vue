@@ -40,7 +40,7 @@ export default {
 		onSave : function(formData){
 			//console.log(formData);
 			that.$request.get("miniCustomAddressService.add", formData).then((res)=> {
-				//console.log(res);
+				console.log(res);
 				uni.showToast({
 					title: res.message, icon:"none", success() {
 						uni.redirectTo({

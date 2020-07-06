@@ -125,7 +125,7 @@ function gotoTargetPage(urlPwd) {
 }
 
 function needUserCheck(apiCode) {
-	const ignore = [".getUserInfo", "miniIndexService.index", "miniProductService.list"]; //这些请求不需要用户验证
+	const ignore = [".getUserInfo", "miniIndexService.index", "miniProductService.list","customerService.loadOne"]; //这些请求不需要用户验证
 	let needCheck = true;
 	ignore.map((str)=> {
 		if(apiCode.indexOf(str)>=0) {needCheck = false;}

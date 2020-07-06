@@ -1,0 +1,6 @@
+.zsl-header-main {
+	height: 80px; padding-top: 20px; display: flex;
+}
+.zsl-header-body {
+	height: 40px; line-height: 40px; text-align: center; font-size: 14px; flex: 1; 
+}

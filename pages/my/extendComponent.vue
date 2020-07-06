@@ -1,6 +1,9 @@
 <template>
-	<view v-if="!custom.bindWx" class="recommend-extend-view" @tap="togoExtend">
-		点击关注“满山晴”公众号，接收{{msg}}信息
+	<view>
+		<text v-if="content" @tap="togoExtend">{{content}}</text>
+		<view v-if="!custom.bindWx && !content" class="recommend-extend-view" @tap="togoExtend">
+			点击关注“满山晴”公众号，接收{{msg}}信息
+		</view>
 	</view>
 </template>
 <script>
@@ -12,6 +15,10 @@ export default{
 			type : String,
 			default : "提示"
 		},
+		content: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -23,7 +30,7 @@ export default{
 		this.custom = uni.getStorageSync(config.CUR_CUSTOM);
 	},
 	methods:{
-		togoExtend: function() { //跳转到关注公众号页面
+		togoExtend: function() { //跳转到关注公众号页面  
 			that.$request.get("miniPublicService.genBindCode", {}).then((res)=> {
 				//console.log(res);
 				const code = res.code;

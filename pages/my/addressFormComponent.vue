@@ -13,16 +13,16 @@
 					<input type="number" maxlength="11" v-model="address.phone" class="grace-form-input" name="phone" placeholder="请填写联系电话"></input>
 				</view>
 			</view>
-			<view class="grace-form-item grace-border-b">
+			<!-- <view class="grace-form-item grace-border-b">
 				<text class="grace-form-label">所在地区</text>
 				<view class="grace-form-body" @tap="openPicker">
 					<input type="text" class="grace-form-input" name="area" :value="area" disabled placeholder="请选择所在地区"></input>
 				</view>
-			</view>
+			</view> -->
 			<view class="grace-form-item grace-border-b">
 				<text class="grace-form-label">详细地址</text>
 				<view class="grace-form-body">
-					<input type="text" class="grace-form-input" v-model="address.street" name="street" placeholder="请填写详细地址"></input>
+					<input type="text" class="grace-form-input" v-model="address.street" name="street" placeholder="请填写详细地址,省/市/县"></input>
 				</view>
 			</view>
 			<view class="grace-form-item grace-border-b">
@@ -31,6 +31,13 @@
 					<switch name="isDefault" :checked="address.isDefault==='1'"/>
 				</view>
 			</view>
+			
+			<view class="grace-form-item grace-border-b">
+				<textarea class="address-area" placeholder-class=""
+					@input="changeAddress"
+				 placeholder="格式: 姓名,电话,地址;          按此格式输入收件人信息,则会自动识别"></textarea>
+			</view>
+			
 			<view style="padding:30rpx 0;">
 				<button formType="submit" type="primary" :disabled="canSubmit" class="grace-button submit-button">提交保存</button>
 				<view v-if="isUpdate" class="grace-button delete-address" @tap="deleteAddress">删除地址</view>
@@ -81,6 +88,23 @@ export default {
 				}
 			})
 			//console.log(address);
+		},
+		//自动生成收货信息
+		changeAddress: function(e) {
+			//console.log(e.target.value);
+			let con = e.target.value;
+			while(con.includes("，")) {con = con.replace("，",",");}
+			//console.log(con)
+			const array = con.split(",");
+			//console.log(array.length)
+			if(array.length=3) {
+				const address = {
+					name: array[0],
+					phone: array[1],
+					street: array[2]
+				}
+				this.address = address;
+			}
 		},
 		initAddress: function() {
 			const obj = that.address;
@@ -136,7 +160,7 @@ export default {
 			const rule = [
 				{ name: "name", checkType: "string", checkRule: "1,10", errorMsg: "联系人应为1-20个字符" },
 				{ name: "phone", checkType: "phoneno", checkRule: "", errorMsg: "请正确填写手机号" },
-				{ name: "area", checkType: "string", checkRule: "1,100", errorMsg: "请选择所在地区" },
+				/* { name: "area", checkType: "string", checkRule: "1,100", errorMsg: "请选择所在地区" }, */
 				{ name: "street", checkType: "string", checkRule: "4,100", errorMsg: "请正确填写详细地址" }
 			];
 			let formData = e.detail.value;
@@ -158,29 +182,32 @@ export default {
 }
 </script>
 <style scoped>
-	.main-body {
-		width:100%;
-	}
-	.name {
-		display: inline-block; font-weight: bold; font-size:14px;
-	}
-	.title-name {
-		width:100%; text-align: center; height:40px; line-height: 40px; font-size: 22px; margin-top: 10px;
-	}
-	.title-name .name {
-		letter-spacing: 0.3em;
-	}
-	.title-name .status {
-		display: inline-block; color:#FFF;
-	}
-	.title-name .status text {
-		color:#FFF; font-size:14px;
-	}
-	.submit-button {
-		background:#FD9704; height: 35px; line-height:35px; letter-spacing: 10rpx; border-radius: 1px; font-size: 14px;
-	}
-	.delete-address {
-		height: 35px; line-height:35px; letter-spacing: 10rpx; border-radius: 1px; font-size: 14px; margin-top: 10px; color:#999; border: none;
-		text-align: center; background: #f0f0f0;
-	}
+.main-body {
+	width:100%;
+}
+.name {
+	display: inline-block; font-weight: bold; font-size:14px;
+}
+.title-name {
+	width:100%; text-align: center; height:40px; line-height: 40px; font-size: 22px; margin-top: 10px;
+}
+.title-name .name {
+	letter-spacing: 0.3em;
+}
+.title-name .status {
+	display: inline-block; color:#FFF;
+}
+.title-name .status text {
+	color:#FFF; font-size:14px;
+}
+.submit-button {
+	background:#FD9704; height: 35px; line-height:35px; letter-spacing: 10rpx; border-radius: 1px; font-size: 14px;
+}
+.delete-address {
+	height: 35px; line-height:35px; letter-spacing: 10rpx; border-radius: 1px; font-size: 14px; margin-top: 10px; color:#999; border: none;
+	text-align: center; background: #f0f0f0;
+}
+.address-area {
+	border:1px #F0F0F0 solid; padding: 5px; margin:5px 0px; width:100%;
+}
 </style>

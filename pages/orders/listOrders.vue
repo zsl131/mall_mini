@@ -38,8 +38,9 @@
 							PS:{{order.orders.remark}}
 						</view>
 						<view class="orders-opts">
+							<button size="mini" @tap="onOpt('-10', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='0' || order.orders.status=='-1'" class="orders-opt">删除</button>
 							<button size="mini" @tap="onOpt('0', order.orders.ordersNo, order.orders.id)" type="warn" v-if="order.orders.status=='0'" class="orders-opt">付款</button>
-							<button size="mini" @tap="onOpt('1', order.orders.ordersNo, order.orders.id)" v-if="order.orders.status=='1'" class="orders-opt">崔发货</button>
+							<button size="mini" @tap="onOpt('1', order.orders.ordersNo, order.orders.id)" v-if="order.orders.status=='1'" class="orders-opt">提醒发货</button>
 							<button size="mini" @tap="onOpt('-1', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='2'" class="orders-opt">物流信息</button>
 							<button size="mini" @tap="onOpt('2', order.orders.ordersNo, order.orders.id)" type="primary" v-if="order.orders.status=='2'" class="orders-opt">确认收货</button>
 							<button size="mini" @tap="onOpt('3', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='3'" class="orders-opt">评价</button>
@@ -163,6 +164,9 @@ export default {
 			else if(status=='2') {cls = 'status-sended';} //已发货
 			else if(status=='3') {cls = 'status-reply';} //需评价
 			else if(status=='4') {cls = "status-end"; } //已完成
+			else if(status=='-1') {cls = "status-canceled";} //闭关
+			else if(status=='-2') {cls = "status-saled";} //有售后
+			else if(status=='-10') {cls = "status-saled";} //已删除
 			return cls;
 		},
 		getStatus: function(status) {
@@ -171,6 +175,9 @@ export default {
 			else if(status=='2') {res = '已发货';}
 			else if(status=='3') {res = '待评价';}
 			else if(status=='4') {res = '已完成';}
+			else if(status=='-1') {res = "已关闭";}
+			else if(status=='-2') {res = "有售后";}
+			else if(status=='-10') {res = "已删除";}
 			return res;
 		},
 		onOpt: function(status, ordersNo, id) {
@@ -194,6 +201,19 @@ export default {
 					success: function(res) {
 						if(res.confirm) {
 							payTools.confirmOrders(ordersNo).then((res)=> {
+								common.reloadPage("../orders/listOrders"); //刷新当前页面
+							})
+						}
+					}
+				})
+			} else if(status=='-10') { //删除订单
+				uni.showModal({
+					title: "系统提示",
+					content:"是否要删除此订单？",
+					mask: true,
+					success: function(res) {
+						if(res.confirm) {
+							payTools.removeOrders(ordersNo).then((res)=> {
 								common.reloadPage("../orders/listOrders"); //刷新当前页面
 							})
 						}
@@ -256,6 +276,12 @@ export default {
 }
 .order-title .status-end {
 	color:#333333;
+}
+.order-title .status-canceled {
+	color:#888888;
+}
+.order-title .status-saled {
+	color:#E17F00;
 }
 
 .single-order-pro {

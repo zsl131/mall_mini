@@ -6,6 +6,7 @@ import config from "./config.js";
  * @param {Object} options 获取分享内容的参数
  */
 function checkShare(options) {
+	//console.log(options)
 	try {
 		if(options) { //如果有参数
 			const sharederId = options.sharederId;
@@ -17,7 +18,7 @@ function checkShare(options) {
 						const date = new Date();
 						obj.startTime = parseInt(date.getTime()/1000);
 						uni.setStorageSync(config.SHAREDER, obj);
-						console.log(res)
+						//console.log(res)
 					}
 				});
 			}
@@ -37,7 +38,7 @@ function loadShare() {
 		const date = new Date();
 		const curTime = parseInt(date.getTime()/1000); //当前时间，秒
 		if(curTime-startTime<timeout) { //在有效期内
-			obj.startTime = curTime; obj.timeout = 3600*1;
+			obj.startTime = curTime; obj.timeout = 3600*3; //3小时内有效
 			uni.setStorageSync(config.SHAREDER, obj);
 			return obj;
 		} else {return null;}

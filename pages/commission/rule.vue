@@ -1,10 +1,10 @@
 <template>
 	<view>
-		<view class="zsl-remark" v-if="(levelList && levelList.length>0)">注意：各级代理按照以下标准进行销售提成，此标准会根据整体经营情况进行适当调整，请各代理注意查阅。</view>
+		<view class="zsl-remark" v-if="(levelList && levelList.length>0)">注意：您将按照以下标准获得销售佣金，此标准会根据整体经营情况进行适当调整，请各代理注意查阅。</view>
 		<view class="show-level-main-view" v-if="(levelList && levelList.length>0)">
-			<view class="show-level-name">
+			<!-- <view class="show-level-name">
 				<view v-for="(level, index) in levelList" @tap="onChangeLevel(level.id)" :key="index" :class="levelId==level.id?'active':''">{{level.name}}</view>
-			</view>
+			</view> -->
 			<scroll-view class="show-rate-list" scroll-y="true" @scrolltolower="onPage">
 				<view class="single-rate" v-for="(rate,index) in rateList" :key="index">{{rate.proTitle}}[{{rate.specsName}}] : <text class="amount">{{rate.rate}}</text> 元/{{rate.unitName}}</view>
 				<view class="more-rate">
@@ -105,7 +105,7 @@ export default {
 	color:#555; font-weight: bold;
 }
 .show-level-main-view {
-	width:100%; border:1px #ddd solid; margin-top:12px; color:#888;
+	width:100%; border-top:1px #ddd solid; margin-top:12px; color:#888;
 }
 .show-level-name {
 	display: flex; 

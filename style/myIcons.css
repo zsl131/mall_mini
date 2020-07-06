@@ -3,7 +3,7 @@
 	font-family : "zsl-iconfont"; 
 	font-weight : normal; 
 	font-style  : normal; 
-	src         : url('https://at.alicdn.com/t/font_1607054_c3p9opul65f.ttf') format('truetype');
+	src         : url('https://at.alicdn.com/t/font_1607054_s0dhymh561.ttf') format('truetype');
 }
 .zsl-icons{font-family:"zsl-iconfont" !important; font-style:normal;}
 
@@ -13,6 +13,94 @@
 
 
 
+
+.icon-kehu:before {
+  content: "\e61b";
+}
+
+.icon-xiaji:before {
+  content: "\e725";
+}
+
+.icon-shenqing:before {
+  content: "\e60d";
+}
+
+.icon-paiming:before {
+  content: "\e6f1";
+}
+
+.icon-paiming1:before {
+  content: "\e853";
+}
+
+.icon-jiangjinjilu:before {
+  content: "\e633";
+}
+
+.icon-jixiaojiangjin:before {
+  content: "\e626";
+}
+
+.icon-paiming2:before {
+  content: "\e65a";
+}
+
+.icon-paiming3:before {
+  content: "\e709";
+}
+
+.icon-weibiaoti-:before {
+  content: "\e601";
+}
+
+.icon-champion:before {
+  content: "\e667";
+}
+
+.icon-paiming-gold:before {
+  content: "\e620";
+}
+
+.icon-champion1:before {
+  content: "\e602";
+}
+
+.icon-icon-paiming-gold:before {
+  content: "\e603";
+}
+
+.icon-paiming4:before {
+  content: "\e61a";
+}
+
+.icon-paiming5:before {
+  content: "\e8bf";
+}
+
+.icon-huiyuanjiangjin:before {
+  content: "\e634";
+}
+
+.icon-paiming6:before {
+  content: "\e605";
+}
+
+.icon-paiming7:before {
+  content: "\e627";
+}
+
+.icon-paiming8:before {
+  content: "\e606";
+}
+
+.icon-paiming9:before {
+  content: "\e654";
+}
+
+.icon-xuzhi:before {
+  content: "\e64d";
+}
 
 .icon-tixian:before {
   content: "\e6b8";

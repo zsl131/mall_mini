@@ -5,7 +5,7 @@
 				bgColor="#f0f0f0" color="#F37B1D"></segmentedControl>
 		</view>
 		<view class="zsl-alter" v-if="status=='0'"><text>“未付款”：</text>即您推荐的顾客已经下单，但还没有付款。</view>
-		<view class="zsl-alter" v-if="status=='1'"><text>“已付款”：</text>即您推荐的顾客已经下单，也已经付款，但还没有确认收货，所以还不产生提成。</view>
+		<view class="zsl-alter" v-if="status=='1'"><text>“已付款”：</text>即您推荐的顾客已经下单，也已经付款，但还没有确认收货，所以还不产生佣金。</view>
 		<view class="zsl-alter" v-if="status=='2'"><text>“可提现”：</text>即您推荐的顾客已经确认收货，可以发起提现。</view>
 		<view class="zsl-alter" v-if="status=='3'"><text>“结算中”：</text>即您已经发起了提现，但系统正在审核，还未向您转账。</view>
 		<view class="zsl-alter" v-if="status=='4'"><text>“已到账”：</text>即系统已审核通过您的提现申请，并已向您转账，具体是否到账请自行查账。</view>
@@ -76,13 +76,14 @@ export default {
 			else if(type=='3') {status = '2';}
 			else if(type=='4') {status = '3';}
 			else if(type=='5') {status = '4';}
-			that.status = status;
+			that.status = status;//
 			return status;
 		},
 		loadData: function(append) {
 			if(that.canPage) {
+				//console.log(that.status)
 				that.$request.get("miniCustomCommissionRecordService.list",{
-					status: parseInt(that.status)-1, page: that.page, size: that.size}).
+					status: that.status, page: that.page, size: that.size}).
 					then((res)=> {
 					//console.log(res)
 					if(append) {

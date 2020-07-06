@@ -20,13 +20,15 @@ function payByOrdersNo(ordersNo) {
 						'signType': dto.signType,
 						'paySign': dto.paySign,
 						'success':function(res){
+							//console.log(res);
 							showInfo(res);
 							paySuccess(ordersNo); //支付成功
-							resolve(res);
+							return resolve(res);
 						},
 						'fail':function(res){
+							//console.log(res);
 							showInfo(res);
-							reject(res);
+							return resolve(res);
 						},
 						'complete':function(res){
 						}
@@ -93,8 +95,26 @@ function confirmOrders(ordersNo) {
 	})
 }
 
+/**
+ * 删除订单
+ * @param {Object} ordersNo 订单号
+ */
+function removeOrders(ordersNo) {
+	return new Promise((resolve, reject)=> {
+		request.get("miniOrdersService.removeOrders", {ordersNo: ordersNo}).then((res)=> {
+			if(res) {
+				uni.showToast({
+					title: res.message
+				})
+				resolve(res.message);
+			} else {reject(res.message)}
+		})
+	})
+}
+
 export default {
 	payByOrdersNo: payByOrdersNo,
 	noticeOrders: noticeOrders,
 	confirmOrders: confirmOrders,
+	removeOrders: removeOrders,
 }

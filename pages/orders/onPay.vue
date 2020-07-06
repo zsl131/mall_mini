@@ -1,18 +1,11 @@
 <template>
 	<view>
-		<showSharederComponent ref="sharedComponent"></showSharederComponent>
-	
-		<view class="main-container">
+		<scroll-view scroll-y="true" class="main-container">
+			<showSharederComponent ref="sharedComponent"></showSharederComponent>
 			
 			<addressComponent :address="address" @selectAddress="selectAddress"></addressComponent>
 			
 			<productComponent ref="proComponent" @changeAmount="changeAmount"></productComponent>
-			
-			<view class="bottom-opts">
-				<text class="total-count">共{{totalCount}}件，</text>
-				<text class="total-money">合计：￥{{totalMoney}}元</text>
-				<text class="pay-submit-btn" @tap="submitOrders">提交订单</text>
-			</view>
 			
 			<view class="coupon-view">
 				<view class="single-other-view grace-nowrap" @tap="onShowCoupon">
@@ -51,6 +44,12 @@
 					</view>
 				</view>
 			</graceBottomDialog>
+		</scroll-view>
+		
+		<view class="bottom-opts">
+			<text class="total-count">共{{totalCount}}件，</text>
+			<text class="total-money">合计：￥{{totalMoney}}元</text>
+			<text class="pay-submit-btn" @tap="submitOrders">提交订单</text>
 		</view>
 	</view>
 </template>
@@ -59,7 +58,7 @@
 var that;
 import addressComponent from "./addressComponent.vue";
 import productComponent from "./productComponent.vue";
-import showSharederComponent from "@/components/showSharederComponent.vue"
+import showSharederComponent from "@/components/showSharederComponent.vue";
 import graceBottomDialog from '@/graceUI/components/graceBottomDialog.vue';
 import common from "@/common/common.js";
 import sharederTools from "@/common/sharederTools.js";
@@ -117,7 +116,7 @@ export default {
 				that.specsList = res.specsList;
 				that.address = res.address;
 				that.productList = res.productList;
-				that.$refs.proComponent.initData(res.productList);
+				that.$refs.proComponent.initData(res.productList, res.specsList);
 				//that.buildCount(); //先
 				that.rebuidCouponList(res.couponList);
 			});
@@ -167,16 +166,34 @@ export default {
 			}
 		},
 		waitPay: function() {
+			uni.showLoading({
+				mask: true,
+				title: '订单生成中...'
+			});
+			//延迟1.5秒，等待后台生成订单信息
+			setTimeout(function() {
+				uni.hideLoading();
+				that.queryOrders();
+			}, 1500);
+		},
+		queryOrders: function() {
 			that.$request.get("miniOrdersService.queryOrdersNo", {ordersKey: that.ordersKey}).then((res)=> {
+				console.log(res)
 				if(res.flag=='1') {
 					payTools.payByOrdersNo(res.ordersNo).then((res)=> {
 						//console.log(res);
-						uni.navigateTo({
+						/* uni.navigateTo({
+							url:'./listOrders'
+						}) */
+						uni.redirectTo({
 							url:'./listOrders'
 						})
 					})
 				} else {
-					uni.navigateTo({
+					/* uni.navigateTo({
+						url: './listOrders'
+					}) */
+					uni.redirectTo({
 						url: './listOrders'
 					})
 				}
@@ -189,7 +206,7 @@ export default {
 		rebuidCouponList: function(data) { //增加一项-不使用
 			let couponList = [that.buildDefaultCoupon()];
 			that.couponList = couponList.concat(data);
-			if(data.length>0) { //如果有优惠券，默认使用第一个
+			if(data && data.length>0) { //如果有优惠券，默认使用第一个
 				that.curCoupon = data[0];
 			}
 			that.rebuildMoney(); //设置优惠券后，需要重新统计总金额
@@ -202,11 +219,14 @@ export default {
 		},
 		buildCount: function() { //统计数量
 			let totalCount = 0, totalMoney=0;
-			that.productList.map((item)=> {
-				//console.log(item)
-				totalCount += (item.amount);
-				totalMoney += (item.amount * item.price);
-			});
+			if(that.productList) {
+				that.productList.map((item)=> {
+					//console.log(item)
+					totalCount += (item.amount);
+					totalMoney += (item.amount * item.price);
+				});
+			}
+			
 			that.totalCount = totalCount;
 			if(totalMoney<0) {totalMoney = 0;} //如果小于0 则归零
 			that.totalMoney = totalMoney;
@@ -262,15 +282,14 @@ export default {
 
 <style>
 .main-container {
-	background: #F5F5f5; min-height: 100vh; padding: 10px; padding-bottom: 50px; position: relative;
+	background: #F5F5f5; height:calc(100vh - 90px); padding: 10px; width:calc(100% - 20px); position: relative;
 }
 
 .coupon-view {
 	background:#FFFFFF; border-radius: 10px; padding: 8px 10px; margin-top:10px;
 }
-
 .bottom-opts {
-	height: 50px; padding:10px 0px; background:#ffffff; left: 0px; width:100vw; bottom: 0px; position: fixed; line-height: 40px; text-align: right;
+	height: 50px; padding-bottom: 12px; background:#ffffff; left: 0px; width:100vw; bottom: 0px; position: fixed; line-height: 40px; text-align: right;
 }
 .pay-submit-btn {
 	margin-right: 12px; height: 30px; padding: 8px 10px; margin-left: 10px; border-radius: 15px;

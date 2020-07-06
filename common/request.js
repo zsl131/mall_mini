@@ -57,9 +57,9 @@ request.get = (apiCode, params, options) => {
 	const curCustom = uni.getStorageSync(config.CUR_CUSTOM);
 	
 	//const launch = wx.getLaunchOptionsSync();
-	//console.log("--->", launch)
+	//console.log("--->", apiCode)
 	
-	//console.log(curCustom);
+	//console.log(curCustom, common.needUserCheck(apiCode));
 	if(!curCustom && common.needUserCheck(apiCode)) { //如果没有用户信息,则跳转到获取用户基本信息页面
 		common.gotoUserPage();
 		return new Promise((resove, reject)=> {reject("请先登陆")});

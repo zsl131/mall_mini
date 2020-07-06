@@ -5,7 +5,7 @@
 		</view>
 		<!-- 购物车为空 -->
 		<view v-if="shoppingCard.length < 1" style="margin-top:100px;">
-			<emptyCompent optMsg="去购物" message="你的购物车空空如也~" @onClick="gotoIndex"></emptyCompent>
+			<emptyCompent optMsg="去逛逛" message="你的购物车空空如也~" @onClick="gotoIndex"></emptyCompent>
 		</view>
 		<!-- 购物车为空 -->
 		
@@ -21,10 +21,16 @@
 				<view class="grace-shoppingcard-goods-body">
 					<view class="grace-shoppingcard-goods-title"><text class="specs-name">[{{item.specsName}}]</text>{{item.proTitle}}</view>
 					<view class="grace-space-between">
-						<view class="grace-shoppingcard-goods-price">
+						<view class="grace-shoppingcard-goods-price" style="display:block;">
+							<view style="width:100%;">
 							<text class="price">￥{{item.price}}</text>
 							<text class="ori-price">￥{{item.oriPrice}}</text>
+							</view>
+							<view style="width:100%; margin-top: 6px;">
+								<text class="specs-amount">库存【{{buildAmount(item)}}】</text>
+							</view>
 						</view>
+						
 						<view class="grace-shoppingcard-goods-number">
 							<graceNumberBox :disabled="true" :index="index" :datas="item.id" inputPadding="5rpx" 
 							:value="item.amount" :maxNum="100" :minNum="1" v-on:change="numberChange"></graceNumberBox>
@@ -70,6 +76,7 @@ export default {
 			// 购物车数据 可以来自 api 请求或本地数据
 			shoppingCard : [],
 			selectedBasket: [], //选择的数据
+			specsList: [],
 		}
 	},
 	onLoad : function(){
@@ -86,12 +93,22 @@ export default {
 			this.$request.get("miniShoppingBasketService.listBasket", {}).then((res)=> {
 				//console.log(res);
 				that.shoppingCard = res.basketList;
+				that.specsList = res.specsList;
 			});
 		},
 		showProduct: function(id) {
 			uni.navigateTo({
 				url: '../product/show?id='+parseInt(id)
 			});
+		},
+		buildAmount: function(obj) {
+			//console.log(obj)
+			let res = 0;
+			that.specsList.map((item)=> {
+				if(obj.specsId==item.id) {res = item.amount;}
+			})
+			if(res<0) {res = 0;}
+			return res;
 		},
 		//计算总计函数
 		countTotoal:function(){
@@ -106,24 +123,35 @@ export default {
 			// console.log(data);
 			const amount = data[0]; const id = Number(data[2]);
 			
+			//console.log("----->"+id)
+			
 			that.$request.get("miniShoppingBasketService.updateAmount", {id: id, amount: amount}).then((res)=> {
-				// console.log(res)
+				/* console.log(res)
+				uni.showModal({
+					title: '提示',
+					content: "--"+res
+				})
+				uni.showModal({
+					title: '提示',
+					content: JSON.stringify(res)
+				}) */
 				if(res.isOut) {uni.showToast({
 					title: "库存不足", icon:"none"
-				})}
-				const resAmount = res.amount;
-				let newBasketList = [];
-				that.shoppingCard.map((item)=> {if(item.id===id) {item.amount = resAmount;} newBasketList.push(item);});
-				that.shoppingCard = newBasketList;
-				
-				// console.log(that.shoppingCard)
-				
-				let newSelect = [];
-				that.selectedBasket.map((item)=> {if(item.id===id) {item.amount = resAmount;} newSelect.push(item);});
-				that.selectedBasket = newSelect;
-				
-				//计算总价
-				this.countTotoal();
+				})} else {
+					const resAmount = res.amount;
+					let newBasketList = [];
+					that.shoppingCard.map((item)=> {if(item.id===id) {item.amount = resAmount;} newBasketList.push(item);});
+					that.shoppingCard = newBasketList;
+					
+					// console.log(that.shoppingCard)
+					
+					let newSelect = [];
+					that.selectedBasket.map((item)=> {if(item.id===id) {item.amount = resAmount;} newSelect.push(item);});
+					that.selectedBasket = newSelect;
+					
+					//计算总价
+					this.countTotoal();
+				}
 			});
 			// this.shoppingCard[data[2]].items[data[1]].count = data[0];
 		},
@@ -174,7 +202,7 @@ export default {
 		},
 		checkout:function(){
 			const selectedBasket = that.selectedBasket;
-			console.log(selectedBasket);
+			//console.log(selectedBasket);
 			if(selectedBasket.length<=0) {
 				uni.showToast({
 					title: '请先选择要结算的产品',
@@ -237,6 +265,9 @@ export default {
 .ori-price {font-size: 24rpx; color:#AAAAAA; text-decoration: line-through; padding-left: 10rpx; padding-top: 10rpx;}
 .specs-name {color:#AAAAAA}	
 
+.specs-amount {
+	color:#999; margin-top: 6px; width:100%;
+}
 	
 page{background:#F8F8F8;}
 .empty-view{width:280rpx; height:280rpx; border-radius:280rpx; background-color:#F6F7F8; margin-top:30rpx;}

@@ -5,7 +5,9 @@
 		@tap.stop="graceSelectChange(index)" v-for="(item, index) in items" :key="index" 
 		:class="[item.id===curId? 'selected-item':'']">
 			<view><text class="select-name">{{item.name}}</text><text class="select-price">￥ {{item.price}}</text><text class="select-ori-price">（原价：{{item.oriPrice}}）</text></view>
-			<view><text class="select-remark">{{item.remark}}</text></view>
+			<view><text class="select-remark">{{item.remark}}</text>
+				<text class="specs-amount">库存【{{rebuildAmount(item.amount)}}】</text>
+			</view>
 		</view>
 		<view class="bottom-opts grace-nowrap">
 			<view class="single-opt join-shop grace-flex1" @tap="onOpt('basket')">加入购物车</view>
@@ -54,6 +56,10 @@ export default {
 				this.$emit("onOpt", action);
 			}
 		},
+		rebuildAmount: function(amount) {
+			if(amount<0) {amount = 0;}
+			return amount;
+		},
 		checkData: function() {
 			const curId = this.curId;
 			if(!curId) {
@@ -88,9 +94,14 @@ export default {
 	margin: 0px 10px 0px 5px; background:#259B24;color:#FFF;
 }
 
+.specs-amount {
+	padding-left: 12px; color:#999;
+}
+
 .selected-item {background:#e76b61;}
 .selected-item .select-name {color:#FFF;}
 .selected-item .select-remark {color:#ffb2ac;}
 .selected-item .select-price {color:#FF0;}
 .selected-item .select-ori-price {color:#ffb2ac;}
+.selected-item .specs-amount { color:#FF0; }
 </style>

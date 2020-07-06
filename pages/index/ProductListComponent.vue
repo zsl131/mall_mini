@@ -107,7 +107,7 @@ export default {
 		font-size: 16px; color:#E51C23; text-align: right; padding-right: 15px; line-height: 50px;
 	}
 	.pro-title {
-		font-size:14px; color:#555; margin: 6px 0px 6px 8px;
+		font-size:36rpx; color:#555; margin: 6px 0px 6px 8px;
 	}
 	.pro-sale-count {
 		font-size:10px; color:#aaa; margin-left: 8px; margin-bottom: 10px;

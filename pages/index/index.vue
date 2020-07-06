@@ -16,7 +16,7 @@
 		<view class="common-line"></view>
 		
 		<graceToTop :top="top" color="#FF0036"></graceToTop>
-		<view class="zsl-bottom" >&copy;版权所有</view>
+		<view class="zsl-bottom" >&copy; 满山晴 版权所有</view>
 	</view>
 </template>
 <script>
@@ -74,7 +74,7 @@ export default {
 	methods: {
 		loadData: function() {
 			that.$request.get("miniIndexService.index", {}).then((res)=> {
-				//console.log(res);
+				//console.log("----index--->",res);
 				that.swiperItems = res.carouseList; //轮播图
 				that.speakerMsgs = res.noticeList; //通知公告
 				that.classes = res.moduleList; //功能模块

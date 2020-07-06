@@ -186,17 +186,67 @@
         ,{
             "path" : "pages/commission/record",
             "style" : {
-            	"navigationBarTitleText":"代理详情"
+            	"navigationBarTitleText":"佣金明细"
             }
         }
 		,{
 		    "path" : "pages/commission/rule",
 		    "style" : {
-		    	"navigationBarTitleText":"提成标准"
+		    	"navigationBarTitleText":"佣金标准"
 		    }
 		}
         ,{
             "path" : "pages/orders/proException",
+            "style" : {}
+        }
+		,{
+		    "path" : "pages/agent/center",
+		    "style" : {
+		    	"navigationBarTitleText":"代理中心"
+		    }
+		}
+        ,{
+            "path" : "pages/topic/show",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/reward/index",
+			"style" : {
+				"navigationBarTitleText":"佣金奖励金"
+			}
+            /* "style" : {
+            	"navigationBarTextStyle":"white",
+            	"enablePullDownRefresh":true,
+            	"titleNView" : false,
+            	"navigationStyle" : "custom"
+            } */
+        }
+        ,{
+            "path" : "pages/reward/ranking",
+            "style" : {
+            	"navigationBarTitleText":"赚钱能手排行榜"
+            }
+        }
+        ,{
+            "path" : "pages/agent/matter",
+            "style" : {
+            	"navigationBarTitleText":"物料申请"
+            }
+        }
+        ,{
+            "path" : "pages/agent/addMatter",
+            "style" : {
+            	"navigationBarTitleText":"物料申请"
+            }
+        }
+        ,{
+            "path" : "pages/agent/sub",
+            "style" : {
+            	"navigationBarTitleText":"我邀请的代理"
+            }
+        }
+        ,{
+            "path" : "pages/agent/customer",
             "style" : {}
         }
     ],
@@ -211,14 +261,18 @@
 	    "list": [{
 	            "name": "index", //模式名称
 	            "path": "pages/index/index", //启动页面，必选
-	            "query": "agentId=1" //启动参数，在页面的onLoad函数里面得到。
+	            "query": "sharederId=4" //启动参数，在页面的onLoad函数里面得到。
+	        }, {
+	            "name": "login", //模式名称
+	            "path": "pages/login/wx", //启动页面，必选
+	            "query": "tagId=1&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 	        }, {
 	            "name": "me", //模式名称
 	            "path": "pages/my/my", //启动页面，必选
 	            "query": "tagId=1&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 	        }, {
 	            "name": "agent", //模式名称
-	            "path": "pages/agent/apply/apply", //启动页面，必选
+	            "path": "pages/agent/center", //启动页面，必选
 	            "query": "tagId=1&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 	        }, {
 	            "name": "show", //模式名称
@@ -229,6 +283,10 @@
 	            "path": "pages/orders/onPay", //启动页面，必选
 	            "query": "ids=_12_11_&type=basket&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 				// "query":"ids=91&type=direct"
+	        }, {
+	            "name": "wxAuth", //模式名称
+	            "path": "pages/login/wx", //启动页面，必选
+	            "query": "autoplay=false" //启动参数，在页面的onLoad函数里面得到。
 	        }, {
 	            "name": "address", //模式名称
 	            "path": "pages/my/address", //启动页面，必选
@@ -265,7 +323,32 @@
 	            "name": "proException", //模式名称
 	            "path": "pages/orders/proException", //启动页面，必选
 	            "query": "id=1&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
-	        }
+	        },
+			{
+			    "name": "topic", //模式名称
+			    "path": "pages/topic/show", //启动页面，必选
+			    "query": "id=1&type=sn&sn=AGENT-NOTICE&autoplay=false" //启动参数，在页面的onLoad函数里面得到。
+			},
+			{
+			    "name": "reward", //模式名称
+			    "path": "pages/reward/index", //启动页面，必选
+			    "query": "id=1" //启动参数，在页面的onLoad函数里面得到。
+			},
+			{
+			    "name": "ranking", //模式名称
+			    "path": "pages/reward/ranking", //启动页面，必选
+			    "query": "id=1" //启动参数，在页面的onLoad函数里面得到。
+			},
+			{
+			    "name": "sub", //模式名称
+			    "path": "pages/agent/sub", //启动页面，必选
+			    "query": "id=1" //启动参数，在页面的onLoad函数里面得到。
+			},
+			{
+			    "name": "customer", //模式名称
+			    "path": "pages/agent/customer", //启动页面，必选
+			    "query": "id=1" //启动参数，在页面的onLoad函数里面得到。
+			}
 	    ]
 	}
 }

@@ -12,7 +12,8 @@
 							<text class="address-name grace-flex1">{{item.name}}</text>
 							<text class="address-phone grace-flex1">{{item.phone}}</text>
 						</view>
-						<view class="address-content">{{item.provinceName}}{{item.cityName}}{{item.countyName}}{{item.street}}</view>
+						<view class="address-content">{{item.provinceName?item.provinceName:''}}
+						{{item.cityName?item.cityName:''}}{{item.countyName?item.countyName:''}}{{item.street}}</view>
 					</view>
 					<view class="grace-nowrap address-opts">
 						<view class="grace-flex1 delete-opt" @tap="opt('delete', item)">删除</view>
