@@ -112,9 +112,27 @@ function removeOrders(ordersNo) {
 	})
 }
 
+/**
+ * 订单退款
+ * @param {Object} ordersNo 订单号
+ */
+function refundOrders(ordersNo, reason) {
+	return new Promise((resolve, reject)=> {
+		request.get("miniOrdersService.refundOrders", {ordersNo: ordersNo, reason: reason}).then((res)=> {
+			uni.showToast({
+				title: res.message
+			})
+			if(res) {
+				resolve(res.message);
+			} else {reject(res.message)}
+		})
+	})
+}
+
 export default {
 	payByOrdersNo: payByOrdersNo,
 	noticeOrders: noticeOrders,
 	confirmOrders: confirmOrders,
 	removeOrders: removeOrders,
+	refundOrders: refundOrders,
 }

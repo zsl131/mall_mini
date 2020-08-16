@@ -16,7 +16,7 @@
 						<text :class="['sale-mode-text', item.saleMode==='2'?'sale-mode-presale':'sale-mode-current']">{{item.saleMode==='2'?"预":"当"}}</text>
 						{{item.title}}</view>
 						<view class="grace-img-card-more">
-							<text class="grace-img-card-price">￥{{item.price}}</text>
+							<text class="grace-img-card-price">￥{{item.price}}<text class="price-remark">起</text></text>
 							<text class="grace-img-card-btn" @tap="gotoShow(item.id)">购买</text>
 						</view>
 						</view>
@@ -133,5 +133,8 @@ export default {
 
 .grace-img-card-title {
 	height: auto;
+}
+.price-remark {
+	font-size: 16rpx; padding-left: 5px; color:#5E5E5E;
 }
 </style>

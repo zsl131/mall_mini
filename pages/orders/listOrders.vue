@@ -41,11 +41,15 @@
 							<button size="mini" @tap="onOpt('-10', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='0' || order.orders.status=='-1'" class="orders-opt">删除</button>
 							<button size="mini" @tap="onOpt('0', order.orders.ordersNo, order.orders.id)" type="warn" v-if="order.orders.status=='0'" class="orders-opt">付款</button>
 							<button size="mini" @tap="onOpt('1', order.orders.ordersNo, order.orders.id)" v-if="order.orders.status=='1'" class="orders-opt">提醒发货</button>
+							<!-- 申请中和申请通过的都不能再申请 -->
+							<button size="mini" @tap="onOpt('-5', order.orders.ordersNo, order.orders.id)" v-if="order.orders.status=='1' && (order.orders.refundFlag!='2'&&order.orders.refundFlag!='1') " class="orders-opt">申请退款</button>
 							<button size="mini" @tap="onOpt('-1', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='2'" class="orders-opt">物流信息</button>
 							<button size="mini" @tap="onOpt('2', order.orders.ordersNo, order.orders.id)" type="primary" v-if="order.orders.status=='2'" class="orders-opt">确认收货</button>
 							<button size="mini" @tap="onOpt('3', order.orders.ordersNo, order.orders.id)" type="default" v-if="order.orders.status=='3'" class="orders-opt">评价</button>
 							<view v-if="order.orders.status=='4'" class="orders-opt opt-gopay">订单已完成</view>
 						</view>
+						<view v-if="order.orders.refundFlag=='1'" class="orders-refund">已申请退款，等待审核</view>
+						<view v-if="order.orders.refundFlag=='-1'" class="orders-refund">退款申请被驳回：{{order.orders.refundVerifyReason}}</view>
 					</view>
 				</view>
 				<view class="grace-margin-top grace-text-center">
@@ -60,6 +64,12 @@
 				<commentComponent :ordersNo="commentOrdersNo" @cancel="onCancel" @ok="onOk"/>
 			</view>
 		</graceDialog>
+		
+		<graceDialog :show="showRefund" title="退款申请">
+			<view slot="content">
+				<refundComponent :reasonList="reasonList" :ordersNo="ordersNo" @cancel="onCancelRefund" @ok="onOkRefund"/>
+			</view>
+		</graceDialog>
 	</view>
 </template>
 
@@ -71,6 +81,7 @@ import segmentedControl from '@/components/segmentedControl.vue';
 import emptyCompent from "@/components/emptyComponent.vue";
 import graceDialog from '@/graceUI/components/graceDialog.vue';
 import commentComponent from "./commentComponent.vue";
+import refundComponent from "./refundComponent.vue";
 import payTools from '@/common/payTools.js';
 import common from "@/common/common.js";
 export default {
@@ -80,15 +91,18 @@ export default {
 			type: 0,
 			page: 0,
 			orders: [], //订单列表
+			ordersNo:'',
 			pageSize: 10,
 			bottomMsg: '上划加载更多 ^_^',
 			canPage: true,
 			loadingType: '3',
 			append: true,
 			showComment: false,
+			showRefund: false,
 			commentOrdersNo:0,
 			
 			commented:[], //已经点评的订单
+			reasonList: [], //原因列表
 		}
 	},
 	onLoad(options) {
@@ -116,6 +130,23 @@ export default {
 		onCancel: function() {
 			//console.log("---")
 			this.showComment = false;
+		},
+		onCancelRefund: function() {this.showRefund = false;},
+		onOkRefund: function(ordersNo, reason) {
+			console.log(ordersNo, reason)
+			uni.showModal({
+				title: "系统提示",
+				content:"确定申请退款吗？申请后需要等待客服审核！",
+				mask: true,
+				success: function(res) {
+					if(res.confirm) {
+						that.onCancelRefund(); //先关闭窗口
+						payTools.refundOrders(ordersNo, reason).then((res)=> {
+							common.reloadPage("../orders/listOrders"); //刷新当前页面
+						})
+					}
+				}
+			})
 		},
 		onOk: function(value) {
 			let commented = that.commented;
@@ -206,6 +237,17 @@ export default {
 						}
 					}
 				})
+			} else if(status=='-5') { //申请退款
+				that.$request.get("refundReasonService.listNoPage", {}).then((res)=> {
+					//console.log(res);
+					// const reasonList = res.reasonList;
+					let reasonList = ["请选择退款原因"];
+					res.reasonList.map((item)=> {reasonList.push(item.reason)});
+					that.reasonList = reasonList;
+					that.showRefund = true;
+					that.ordersNo = ordersNo;
+					//console.log(reasonList);
+				})
 			} else if(status=='-10') { //删除订单
 				uni.showModal({
 					title: "系统提示",
@@ -243,7 +285,7 @@ export default {
 		segmentedControl,
 		emptyCompent,
 		graceDialog,
-		commentComponent,
+		commentComponent,refundComponent,
 	}
 }
 </script>
@@ -342,6 +384,8 @@ export default {
 .orders-remark-view {
 	padding: 5px 10px; color:#777;
 }
-
+.orders-refund {
+	padding: 5px 10px; text-align: right; color:#F00; 
+}
 
 </style>

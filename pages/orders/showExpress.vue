@@ -1,11 +1,23 @@
 <template>
 	<view class="main-view">
-		<view class="normal-block address-view" v-if="express">
-			<text>收货地址：</text>{{express.addressCon}}
+		<view class="normal-block address-view" v-if="orders && orders.id">
+			<text>收货地址：</text>{{orders.addressCon}}
+		</view>
+		<view class="normal-block express-company express-select" v-if="expressList && expressList.length>0">
+			<picker @change="bindPickerChange" :value="expressIndex" :range="expressArray">
+				当前选择：<text class="current-express">{{express.expName}}【{{express.expNo}}】</text>
+				<text class="change-express">点击可切换</text>
+			</picker>
 		</view>
 		<view class="normal-block express-company" v-if="!detail.type && express">
 			{{express.expName}}【{{express.expNo}}】
 			<view><text>说明:</text>暂无任何物流信息</view>
+		</view>
+		<view class="normal-block express-company red" v-if="orders.status=='-10' || orders.status=='-1' || orders.status=='0'">
+			此订单已关闭或未付款
+		</view>
+		<view class="normal-block express-company red" v-if="orders.status=='1'">
+			此订单还没有发货，请耐心等待...
 		</view>
 		<view class="normal-block express-company" v-if="detail && detail.type">
 			{{detail.expName}}【{{detail.number}}】
@@ -35,25 +47,51 @@ export default {
 	data() {
 		return {
 			id: 0,
-			express:{},
+			orders:{}, //
+			express:null,
+			expressList: [],
 			detail: {},
-			recommendList: {}
+			recommendList: {},
+			expressIndex: 0,
+			expressArray:[], //
+			
 		}
 	},
 	onLoad(options) {
 		that = this;
 		this.id = options.id;
-		that.loadData();
+		that.loadData("");
 	},
 	methods: {
-		loadData: function() {
-			that.$request.get("ordersExpressService.queryDetail", {id: that.id}).then((res)=> {
-				console.log(res);
+		loadData: function(expNo) {
+			that.$request.get("ordersExpressService.queryDetail", {id: that.id,expNo:expNo}).then((res)=> {
+				//console.log(res);
+				that.orders = res.orders;
 				that.express = res.express;
 				that.detail = res.detail;
 				that.recommendList = res.recommendList;
+				that.expressList = res.expressList;
+				that.rebuildArray();
 			})
-		}
+		},
+		rebuildArray: function() {
+			let array = []; let index = 0; let indexFlag = 0;
+			this.expressList.map((item)=> {
+				array.push(item.expName+"-"+item.expNo);
+				if(that.express && that.express.expNo==item.expNo) {index = indexFlag;}
+				indexFlag++;
+			});
+			this.expressArray = array;
+			this.expressIndex = index;
+		},
+		bindPickerChange: function(e) {
+			let index = e.target.value;
+			//console.log('picker发送选择改变，携带值为', index);
+			this.expressIndex = index;
+			let expNo = this.expressList[index].expNo;
+			//console.log(expNo);
+			this.loadData(expNo);
+		},
 	},
 	components: {ProductListComponent}
 }
@@ -103,5 +141,18 @@ export default {
 }
 .recommend-pro-view {
 	width:100%; background:#FFFFFF; min-height: 100px; border-radius:10px; margin-top: 25px;
+}
+
+.express-select {
+	border-top:1px #e8e8e8 solid; border-bottom: 1px #e8e8e8 solid;
+}
+text.current-express {
+	color:#555; font-size: 24rpx; font-weight: bold;
+}
+.red {
+	color:#F00;
+}
+.change-express {
+	text-align: right; margin-left: 10px;
 }
 </style>

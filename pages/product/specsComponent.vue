@@ -1,6 +1,10 @@
 <template>
-	<view class="grace-select-tags">
-		<view class="grace-select-tag" 
+	<scroll-view scroll-y="true" class="specs-main-container" :style="{'height': height+'px', 'overflow':'auto'}">
+	<view class="grace-select-tags" >
+		<view v-if="!items || items.length<=0" class="amount-exception">
+			此产品库存不足，暂时无法选购
+		</view>
+		<view class="grace-select-tag-single" 
 		:style="{width : itemWidth, fontSize:fontSize}" 
 		@tap.stop="graceSelectChange(index)" v-for="(item, index) in items" :key="index" 
 		:class="[item.id===curId? 'selected-item':'']">
@@ -14,6 +18,7 @@
 			<view class="single-opt buy-now grace-flex1" @tap="onOpt('buy')">立即购买</view>
 		</view>
 	</view>
+	</scroll-view>
 </template>
 <script>
 export default {
@@ -32,15 +37,10 @@ export default {
 		// this.curId = this.defaultId;
 		//console.log(this.items);
 	},
-	beforeCreate: function() {
-		// console.log("==============-=-=-=-=-=>>>>")
-	},
-	mounted: function() {
-		// console.log("==-=-=-=-=-=-=-=")
-	},
 	data() {
 		return {
 			data : [],
+			height: 100,
 			// curId: 0,
 		}
 	},
@@ -49,6 +49,18 @@ export default {
 			for (var i = 0; i < this.items.length; i++){this.items[i].checked = false;}
 			this.curId = this.items[index].id;
 			this.$emit("change", this.items[index]);
+		},
+		initData: function(specsList) {
+			//console.log(specsList)
+			const maxSize = 4, singleHeight = 100;
+			let height = 0;
+			if(specsList.length<=0) { height = singleHeight+15;} 
+			else if (specsList.length<=3) {height = singleHeight * specsList.length + 20;}
+			else {height = singleHeight * maxSize;}
+			//height += 45;
+			this.height = height;
+			//console.log("------->height:: "+height)
+			//console.log(specsList)
 		},
 		onOpt: function(action) {
 			if(this.checkData()) {
@@ -73,8 +85,16 @@ export default {
 }
 </script>
 <style scoped>
-.grace-select-tags{display:flex; flex-direction:row; flex-wrap:wrap;}
-.grace-select-tag{padding: 8px; line-height:60rpx; margin:10rpx; font-size:24rpx; border-radius:8rpx; background:#F6F7F8;}
+.specs-main-container {
+	 overflow: auto; 
+}
+.grace-select-tags{display:flex; flex-direction:row; flex-wrap:wrap; 
+	background:#FFF; position: relative; bottom: 0px; padding-bottom: 60px;
+}
+.grace-select-tag-single{line-height:60rpx; margin:5px 10rpx; font-size:24rpx; border-radius:8rpx; background:#F6F7F8;}
+.grace-select-tag-single view {
+	margin-bottom:0px; margin: 8px;
+}
 .grace-checked{color:#FFFFFF;}
 .select-name {color:#333; font-size: 16px; }
 .select-remark {color:#aaa; font-size: 12px;}
@@ -82,7 +102,7 @@ export default {
 .select-ori-price {color:#aaa; font-size: 12px; padding-left: 5px; text-decoration: line-through;}
 
 .bottom-opts {
-	width:100%; height:40px; text-align: center; padding-bottom: 10rpx;
+	width:100%; height:40px; text-align: center; padding-bottom: 10rpx; position: absolute; bottom: 10px;
 }
 .single-opt {
 	height: 40px; line-height: 40px; border-radius: 20px; text-align: center; font-size: 14px; font-weight: normal;
@@ -104,4 +124,5 @@ export default {
 .selected-item .select-price {color:#FF0;}
 .selected-item .select-ori-price {color:#ffb2ac;}
 .selected-item .specs-amount { color:#FF0; }
+.amount-exception {color:#F00; width: 100%; text-align: center; line-height: 45px; font-size: 36rpx;}
 </style>

@@ -39,7 +39,7 @@
 					<view class="grace-dialog-buttons" style="color:#00B26A;" @tap="closeShow">确定</view>
 				</view>
 				<view slot="content">
-					<specsComponent itemWidth="730rpx" :curId="curSpecs.id" :items="specsList" type="radio" @onOpt="onOpt" @change="changeSpecs"></specsComponent>
+					<specsComponent ref="specsCom" itemWidth="730rpx" :curId="curSpecs.id" :items="specsList" type="radio" @onOpt="onOpt" @change="changeSpecs"></specsComponent>
 				</view>
 			</graceBottomDialog>
 			
@@ -180,7 +180,13 @@ export default {
 				if(that.specsList.length===1) {that.curSpecs = that.specsList[0]}
 				// that.curSpecs = that.specsList[0]
 				if(res.favorite) {that.hasFavorite = true;}
+				
+				//that.specsHeight(that.specsList);
 			});
+		},
+		specsHeight: function(specsList) {
+			//console.log(this.$refs.specsCom)
+			this.$refs.specsCom.initData(specsList);
 		},
 		rebuildContent: function(con) { //重新设置html内容
 			const oldStr = '<img id="xxx"';
@@ -248,6 +254,7 @@ export default {
 		closeShare: function() {that.showShare = false;},
 		showSpecsDialog: () => {
 			that.showSpecs = true;
+			that.specsHeight(that.specsList);
 		},
 		closeShow: ()=> {that.showSpecs = false;},
 		changeSpecs: (obj) => {

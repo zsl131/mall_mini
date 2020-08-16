@@ -133,7 +133,7 @@
         ,{
             "path" : "pages/my/coupon",
             "style" : {
-				"navigationBarTitleText":"我的优惠券"
+				"navigationBarTitleText":"我的抵价券"
 			}
         }
         ,{
@@ -249,6 +249,12 @@
             "path" : "pages/agent/customer",
             "style" : {}
         }
+        ,{
+            "path" : "pages/coupon/first",
+            "style" : {
+            	"navigationBarTitleText":"领券吧"
+            }
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
@@ -347,6 +353,11 @@
 			{
 			    "name": "customer", //模式名称
 			    "path": "pages/agent/customer", //启动页面，必选
+			    "query": "id=1" //启动参数，在页面的onLoad函数里面得到。
+			},
+			{
+			    "name": "coupon", //模式名称
+			    "path": "pages/coupon/first", //启动页面，必选
 			    "query": "id=1" //启动参数，在页面的onLoad函数里面得到。
 			}
 	    ]

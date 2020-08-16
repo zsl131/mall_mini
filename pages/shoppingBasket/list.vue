@@ -117,7 +117,7 @@ export default {
 			selectedBasket.map((item)=> {
 				total += (item.amount*item.price);
 			});
-			this.totalprice = total;
+			this.totalprice = total.toFixed(2);
 		},
 		numberChange:function(data){ //修改数量
 			// console.log(data);

@@ -7,13 +7,16 @@
 					bgColor="#f0f0f0" color="#F37B1D"></segmentedControl>
 			</view>
 			
-			<view class="grace-space-between" v-if="couponList.length>0">
+			<view class="first-coupon-list" v-if="couponList.length>0">
 				<view class="waterfall-item" v-for="(item, index1) in couponList" :key="index1">
 					<couponComponent :coupon="item" @onClick="onClick"></couponComponent>
 				</view>
+				<view class="coupon-opt-btn" @click="gotoCoupon()">
+					前去领券
+				</view>
 			</view>
 			<view v-if="couponList.length<=0">
-				<emptyCompent ></emptyCompent>
+				<emptyCompent optMsg="领取抵价券" @onClick="gotoCoupon()"></emptyCompent>
 			</view>
 			<view class="grace-margin-top grace-text-center">
 				<text class="grace-text zsl-loadmore-text">{{bottomMsg}}</text>
@@ -81,6 +84,11 @@ export default {
 			that.append = false;
 			that.loadData();
 		},
+		gotoCoupon: function() {
+			uni.navigateTo({
+				url:"../coupon/first"
+			})
+		},
 		onClick: function(proId) {
 			//console.log(proId);
 			if(proId && proId>0) {
@@ -105,5 +113,11 @@ export default {
 </script>
 
 <style>
-.waterfall-item {width:100%; padding: 12px 0px 12px 0px;}
+.waterfall-item {width:100%; padding: 6px 0px 6px 0px;}
+.first-coupon-list {
+	padding: 10px 4px;
+}
+.coupon-opt-btn {
+	margin-top: 15px; width: 100%; background:#00BA62; color:#FFF; height: 40px; line-height: 40px; text-align: center; border-radius: 5px; font-size: 30rpx;
+}
 </style>

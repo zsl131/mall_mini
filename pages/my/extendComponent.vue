@@ -44,6 +44,7 @@ export default{
 								data: code
 							});
 							uni.navigateTo({
+								//                                     https://mp.weixin.qq.com/s/eFhWaoqFBtiBUegLPonBtw
 								url: '/pages/my/myWeb?src='+encodeURI("https://mp.weixin.qq.com/s/eFhWaoqFBtiBUegLPonBtw")
 							})
 						}

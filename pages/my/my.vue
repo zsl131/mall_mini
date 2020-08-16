@@ -48,7 +48,7 @@
 				<text class="grace-list-icon zsl-icons icon-coupon grace-red"></text>
 				<view class="grace-list-body grace-border-b">
 					<view class="grace-list-title">
-						<text class="grace-list-title-text">我的优惠券</text>
+						<text class="grace-list-title-text">我的抵价券</text>
 					</view>
 				</view>
 				<text class="grace-list-arrow-right grace-icons icon-arrow-right"></text>

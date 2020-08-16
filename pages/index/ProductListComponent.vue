@@ -20,7 +20,7 @@
 							<view class="pro-title">{{item.title}}</view>
 							<view class="pro-sale-count">销量：{{item.saleCount+item.defaultSale}}</view>
 						</view>
-						<view class="grace-flex1 pro-price">￥ {{item.price}}</view>
+						<view class="grace-flex1 pro-price">￥ {{item.price}}<text class="small-text">起</text></view>
 					</view>
 				</view>
 			</navigator>
@@ -111,5 +111,8 @@ export default {
 	}
 	.pro-sale-count {
 		font-size:10px; color:#aaa; margin-left: 8px; margin-bottom: 10px;
+	}
+	.small-text {
+		font-size: 9px; color:#aaa; padding-left: 2px;
 	}
 </style>

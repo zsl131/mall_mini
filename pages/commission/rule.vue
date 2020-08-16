@@ -49,7 +49,7 @@ export default {
 				that.$request.get("miniAgentLevelSpecsRateService.query",{
 					levelId: that.levelId, page: that.page, size: that.size}).
 					then((res)=> {
-					//console.log(res)
+					console.log(res)
 					that.levelList = res.levelList;
 					that.levelId = res.levelId;
 					if(append) {

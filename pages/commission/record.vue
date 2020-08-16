@@ -11,7 +11,7 @@
 		<view class="zsl-alter" v-if="status=='4'"><text>“已到账”：</text>即系统已审核通过您的提现申请，并已向您转账，具体是否到账请自行查账。</view>
 		
 		<view class="record-main-view" v-if="recordList.length>0">
-			<view class="single-record" v-for="(item, index) in recordList" :key="index">
+			<view class="single-record" @click="onClick(item)" v-for="(item, index) in recordList" :key="index">
 				<view class="record-info">
 					<view class="custom-info">
 						<text class="nickname">{{item.customNickname}}</text>
@@ -23,12 +23,16 @@
 				<view class="record-money">
 					<view><text>可提</text>{{item.money}}<text>元</text></view>
 					<view class="record-status">
+						<text v-if="item.status=='-2'" class="status-cancel">已退款</text>
 						<text v-if="item.status=='-1'" class="status-cancel">已取消</text>
 						<text v-if="item.status=='0'" class="status-nopay">未付款</text>
 						<text v-if="item.status=='1'" class="status-pay">已付款</text>
-						<text v-if="item.status=='2'" class="status-cash">可提现</text>
+						<text v-if="item.status=='2'" class="status-cash">待提现</text>
 						<text v-if="item.status=='3'" class="status-running">结算中</text>
 						<text v-if="item.status=='4'" class="status-end">已转款</text>
+						
+						<text v-if="item.saleFlag=='1'" class="status-cash">-有售后</text>
+						<text v-if="item.saleFlag=='2'" class="status-cash">-有售后，不可提</text>
 					</view>
 				</view>
 			</view>
@@ -66,6 +70,9 @@ export default {
 		that.type = options.status;
 		that.genStatus();
 		that.loadData();
+		uni.showToast({
+			title: "点击数据项可查看物流信息", icon:"none"
+		})
 	},
 	methods: {
 		genStatus: function() {
@@ -120,6 +127,13 @@ export default {
 		onPage: function() {
 			// console.log("--------")
 			that.loadData(true);
+		},
+		onClick: function(item) {
+			//console.log(item)
+			uni.navigateTo({
+				url: "../orders/showExpress?id="+item.ordersId
+				// url: "./detail?ordersId="+item.ordersId
+			})
 		},
 	},
 	components: {
