@@ -25,6 +25,19 @@
 				</view>
 			</view>
 			
+			<view class="coupon-view" v-if="commissionList && commissionList.length>0">
+				<view class="commission-total">佣金直扣合计：<text>{{buildCommissionTotal()}}</text>元</view>
+				<view class="commission-detail">
+					<view class="commission-detail-single" v-for="(item, index) in commissionList" :key="index">
+						<text>[{{item.specsName}}]:</text>
+						<text class="com-price">{{item.rate}} 元</text>*
+						<text class="com-amount">{{queryAmount(item.specsId)}} 件</text>=
+						<text class="com-total">{{item.rate * queryAmount(item.specsId)}} 元</text>
+						
+					</view>
+				</view>
+			</view>
+			
 			<graceBottomDialog :show="showCoupon" v-on:closeDialog="closeShow">
 				<view slot="content">
 					<view class="grace-select-tags">
@@ -83,6 +96,7 @@ export default {
 			canSubmit: true, //是否可提交
 			
 			remark: '', //提交订单时的参数
+			commissionList: [], //佣金标准
 			// couponMoney: '', //优惠金额
 			// couponId: 0, //优惠券ID
 			// couponName: '无优惠', //优惠券名称
@@ -111,11 +125,12 @@ export default {
 		},
 		loadData: function() {
 			this.$request.get("miniOrdersService.onPay", this.query).then((res)=> {
-				//console.log(res);
+				console.log(res);
 				that.basketList = res.basketList;
 				that.specsList = res.specsList;
 				that.address = res.address;
 				that.productList = res.productList;
+				that.commissionList = res.commissionList;
 				that.$refs.proComponent.initData(res.productList, res.specsList);
 				//that.buildCount(); //先
 				that.rebuidCouponList(res.couponList);
@@ -154,6 +169,7 @@ export default {
 					ordersKey: that.ordersKey, //订单密钥
 					agentId: 0, //对应代理ID
 					agentOpenid: shareder?shareder.openid:'', //对应的代理Openid
+					// agentOpenid: 'oIguM5VmivGQDNXVA_DFty31gNj0'
 				}
 				if(that.canSubmit) {
 					that.canSubmit = false;
@@ -200,7 +216,7 @@ export default {
 			})
 		},
 		buildDefaultCoupon: function() {
-			const c = {id:0, couponName: "不使用", remark: '本次不使用任何优惠券', worth: ''};
+			const c = {id:0, couponName: "不使用", remark: '本次不使用任何优惠券', worth: '', reachMoney:0};
 			return c;
 		},
 		rebuidCouponList: function(data) { //增加一项-不使用
@@ -217,6 +233,24 @@ export default {
 				url: "../my/address"
 			})
 		},
+		//查询对应规格的数量
+		queryAmount: function(specsId) {
+			const proList = that.productList;
+			let res = 1;
+			proList.map((item)=> {
+				if(item.specsId==specsId) {res = item.amount;}
+			});
+			return res;
+		},
+		//统计佣金金额
+		buildCommissionTotal: function() {
+			const commissionList = that.commissionList;
+			let res = 0;
+			commissionList.map((item)=> {
+				res += (item.rate * that.queryAmount(item.specsId));
+			})
+			return res;
+		},
 		buildCount: function() { //统计数量
 			let totalCount = 0, totalMoney=0;
 			if(that.productList) {
@@ -228,8 +262,9 @@ export default {
 			}
 			
 			that.totalCount = totalCount;
+			totalMoney -= that.buildCommissionTotal();
 			if(totalMoney<0) {totalMoney = 0;} //如果小于0 则归零
-			that.totalMoney = totalMoney;
+			that.totalMoney = totalMoney.toFixed(1);
 			
 			if(that.totalCount<0) { //如果没有任何数量则返回
 				that.gotoBack();
@@ -246,8 +281,21 @@ export default {
 			that.showCoupon = false;
 		},
 		couponSelectChange: function(obj) {
-			that.curCoupon = obj;
-			that.rebuildMoney();
+			//console.log(obj, that.totalMoney)
+			const couponMoney = that.curCoupon.worth;
+			const totalMoney = that.totalMoney - (couponMoney?couponMoney:0);
+			//console.log(couponMoney, totalMoney)
+			if(totalMoney>=obj.reachMoney) {
+				//console.log("----->")
+				that.curCoupon = obj;
+				that.rebuildMoney();
+			} else {
+				// console.log("=====>")
+				uni.showToast({
+					title:"订单金额不够，不可使用此券", icon:"none"
+				})
+			}
+			//console.log(couponMoney)
 		},
 		rebuildMoney: function() { //重新计算总金额
 			that.buildCount(); //重新统计数量和金额
@@ -268,6 +316,8 @@ export default {
 				data.push(item);
 			});
 			this.productLisst = data;
+			//console.log(data)
+			that.curCoupon = that.buildDefaultCoupon();
 			this.rebuildMoney();  //重新计算金额
 		},
 	},
@@ -360,5 +410,13 @@ export default {
 .selected-item .select-remark {color:#ffb2ac;}
 .selected-item .select-price {color:#FF0;}
 .selected-item .select-ori-price {color:#ffb2ac;}
+
+.commission-total {font-size: 36rpx;}
+.commission-total text {font-weight: bold; color:#F00;padding-right:4px;}
+.commission-detail {color:#888; line-height: 60rpx; }
+.commission-detail-single text {font-size: 32rpx;}
+.com-price {font-weight: bold;}
+.com-amount {font-weight: bold;}
+.com-total {font-weight: bold; color:#F00;}
 
 </style>

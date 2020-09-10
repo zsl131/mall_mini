@@ -27,7 +27,8 @@
 				<view class="orders-amount-view">
 					<text class="amount">共{{orders.totalCount}}件商品</text>
 					<text class="discount" v-if="orders.discountMoney && orders.discountMoney>0">，优惠：{{orders.discountMoney}} 元</text>
-					<text class="money">，合计：￥<text v-if="orders.discountMoney && orders.discountMoney>0">{{orders.totalMoney-orders.discountMoney}}</text><text v-if="!orders.discountMoney || orders.discountMoney<=0">{{orders.totalMoney}}</text> 元</text>
+					<text class="discount" v-if="orders.autoCommissionMoney && orders.autoCommissionMoney>0">，抵扣佣金：{{orders.autoCommissionMoney}} 元</text>
+					<text class="money">，合计：￥<text>{{(orders.totalMoney-(orders.discountMoney?orders.discountMoney:0)-(orders.autoCommissionMoney?orders.autoCommissionMoney:0)).toFixed(1)}}</text> 元</text>
 				</view>
 				<view v-if="orders.remark" class="orders-remark-view">
 					PS:{{orders.remark}}
@@ -288,6 +289,7 @@ export default {
 .orders-amount-view text.discount {
 	padding-left: 5px; font-size:12px; color:#555;
 }
+.orders-amount-view text.money {padding-right: 12px;}
 .orders-amount-view text.money text {
 	font-size: 14px; margin-right: 12px;
 }

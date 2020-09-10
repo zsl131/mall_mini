@@ -266,6 +266,7 @@ export default {
 			const pro = that.product;
 			if(!specs) {
 				that.showSpecs = true;
+				that.specsHeight(that.specsList);
 			} else {
 				if("buy"===action) {
 					//console.log(specs, pro)

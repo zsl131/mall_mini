@@ -51,7 +51,7 @@ export default {
 			this.$emit("change", this.items[index]);
 		},
 		initData: function(specsList) {
-			//console.log(specsList)
+			//console.log(specsList);
 			const maxSize = 4, singleHeight = 100;
 			let height = 0;
 			if(specsList.length<=0) { height = singleHeight+15;} 

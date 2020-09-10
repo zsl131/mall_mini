@@ -215,7 +215,7 @@ export default{
 		loadData: function() {
 			const shareder = sharederTools.loadShare();
 			that.$request.get("miniCustomCommissionRecordService.listOwn", {shareId: shareder?shareder.id:0}).then((res)=> {
-				//console.log(res);
+				console.log(res);
 				that.commissionList = res.commissionList;
 				that.agent = res.agent;
 				that.buildCash();
